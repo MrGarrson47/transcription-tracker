@@ -17,14 +17,26 @@ const Calendar = () => {
   const [showYearDropdown, setShowYearDropdown] = useState(false);
   const dispatch = useDispatch();
 
-  const add1ToYear = () => {
+  const add1Year = () => {
     let newYear = selectedYear + 1;
     return stringFromDateObject(new Date(newYear, selectedMonth, 1));
   }
 
-  const subtract1FromYear = () =>{
+  const subtract1Year = () =>{
     let newYear = selectedYear - 1;
     return stringFromDateObject(new Date(newYear, selectedMonth, 1));
+  }
+
+  const add1Month = () =>{
+    let newMonth = selectedMonth + 1;
+    newMonth = newMonth > 11 ? 0 : newMonth < 0 ? 11 : newMonth;
+    return stringFromDateObject(new Date(selectedYear, newMonth, 1));
+  }
+
+  const subtract1Month = () =>{
+    let newMonth = selectedMonth - 1;
+    newMonth = newMonth > 11 ? 0 : newMonth < 0 ? 11 : newMonth;
+    return stringFromDateObject(new Date(selectedYear, newMonth, 1));
   }
 
   const yearDropdownHandler = () => {
@@ -33,9 +45,9 @@ const Calendar = () => {
 
   const nextYearBtnHandler = () => {
     dispatch({
-      type: "UPDATE YEAR",
+      type: "UPDATE DATE",
       payload: {
-        selectedDate: add1ToYear(),
+        selectedDate: add1Year(),
         selectedDay: 1
       }
     });
@@ -43,20 +55,32 @@ const Calendar = () => {
 
   const previousYearBtnHandler = () => {
     dispatch({
-      type: "UPDATE YEAR",
+      type: "UPDATE DATE",
       payload: {
-        selectedDate: subtract1FromYear(),
+        selectedDate: subtract1Year(),
         selectedDay: 1
       }
     });
   }
 
   const nextMonthBtnHandler = () => {
-    dispatch({ type: "NEXT MONTH", payload: 1 });
+    dispatch({
+      type: "UPDATE DATE",
+      payload: {
+        selectedDate: add1Month(),
+        selectedDay: 1
+      }
+    });
   }
 
   const previousMonthBtnHandler = () => {
-    dispatch({ type: "PREVIOUS MONTH", payload: -1 })
+    dispatch({
+      type: "UPDATE DATE",
+      payload: {
+        selectedDate: subtract1Month(),
+        selectedDay: 1
+      }
+    });
   }
 
   const selectDayHandler = (e) => {
@@ -67,7 +91,7 @@ const Calendar = () => {
   }
 
   const getWeekColumnHeaders = () => {
-    return weekDays.map(day => <div className={classes.weekHeader}><p className={classes.weekHeaderText}>{day}</p></div>)
+    return weekDays.map((day, index) => <div key={`weekHeader${index}`} className={classes.weekHeader}><p className={classes.weekHeaderText}>{day}</p></div>)
   }
 
   const isBlankDay = (indexOfDay, totalDaysObject) => {
@@ -89,11 +113,11 @@ const Calendar = () => {
   }
 
   const getBlankDay = (day, index, totalDays) => {
-    return <div className={classes.dayBlank} id={`${day}-${index}-${totalDays}`}><p className={classes.dayText}>{day}</p></div>
+    return <div key={`blank-${index}`} className={classes.dayBlank} id={`${day}-${index}-${totalDays}`}><p className={classes.dayText}>{day}</p></div>
   }
 
   const getCalendarDay = (day, index, totalDays) => {
-    return <div onClick={selectDayHandler} className={day === selectedDay ? classes.dayActive : classes.dayPassive} id={`${day}-${index}-${totalDays}`}><p className={classes.dayText}>{day}</p></div>
+    return <div key={`day-${index}`} onClick={selectDayHandler} className={day === selectedDay ? classes.dayActive : classes.dayPassive} id={`${day}-${index}-${totalDays}`}><p className={classes.dayText}>{day}</p></div>
   }
 
   return (

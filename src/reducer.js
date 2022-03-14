@@ -1,5 +1,4 @@
 import { dateObjectFromString, stringFromDateObject } from "./generalDateFunctions";
-import { yearCalculator, monthCalculator } from "./reducerFunctions";
 
 let currentDate = new Date().toString();
 let currentDay = new Date().getDate();
@@ -18,14 +17,8 @@ const initialDateState = {
 
 export const dateReducer = (state = initialDateState, action) => {
     switch (action.type) {
-        case "UPDATE YEAR":{
+        case "UPDATE DATE": {
             return { ...state, selectedDate: action.payload.selectedDate, selectedDay: action.payload.selectedDay }
-        }
-        case "NEXT MONTH": {
-            return monthUpdater(state, action.payload);
-        }
-        case "PREVIOUS MONTH": {
-            return monthUpdater(state, action.payload);
         }
         case "SELECT DAY": {
             return selectDayUpdater(state, action.payload)
@@ -36,29 +29,6 @@ export const dateReducer = (state = initialDateState, action) => {
     }
 
 }
-
-const yearUpdater = (state, payload) => {
-    let dateObject = dateObjectFromString(state.selectedDate);
-    let newDateObject = yearCalculator(dateObject, payload);
-    let newDateString = stringFromDateObject(newDateObject);
-    return {
-        ...state,
-        selectedDate: newDateString,
-        selectedDay: 1
-    }
-}
-
-const monthUpdater = (state, payload) => {
-    let dateObject = dateObjectFromString(state.selectedDate);
-    let newDateObject = monthCalculator(dateObject, payload);
-    let newDateString = stringFromDateObject(newDateObject)
-    return {
-        ...state,
-        selectedDate: newDateString,
-        selectedDay: 1
-    }
-}
-
 
 const selectDayUpdater = (state, payload) => {
     let dateObject = dateObjectFromString(state.selectedDate);
