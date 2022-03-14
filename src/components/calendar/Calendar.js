@@ -1,8 +1,9 @@
 import classes from "./Calendar.module.css";
-import { getTotalDaysForCalendar, getFirstWeekdayOfMonthAsIndex, getDaysInThisMonth, getDateObjectFromString } from "./dayCalcFunctions";
+import { getTotalDaysForCalendar, getDateObjectFromString } from "./dayCalcFunctions";
 import DropdownDate from "./DropdownDate";
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { stringFromDateObject } from "../../generalDateFunctions";
 
 const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -10,21 +11,44 @@ const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const Calendar = () => {
   const currentDate = getDateObjectFromString(useSelector((state) => state.selectedDate))
   const selectedDay = useSelector((state) => state.selectedDay)
-  const yearText = currentDate.getFullYear();
-  const monthText = months[currentDate.getMonth()];
+  const selectedYear = currentDate.getFullYear();
+  const selectedMonth = currentDate.getMonth();
+  const selectedMonthAsText = months[currentDate.getMonth()];
   const [showYearDropdown, setShowYearDropdown] = useState(false);
   const dispatch = useDispatch();
+
+  const add1ToYear = () => {
+    let newYear = selectedYear + 1;
+    return stringFromDateObject(new Date(newYear, selectedMonth, 1));
+  }
+
+  const subtract1FromYear = () =>{
+    let newYear = selectedYear - 1;
+    return stringFromDateObject(new Date(newYear, selectedMonth, 1));
+  }
 
   const yearDropdownHandler = () => {
     setShowYearDropdown(state => !state);
   }
 
   const nextYearBtnHandler = () => {
-    dispatch({ type: "NEXT YEAR", payload: 1 });
+    dispatch({
+      type: "UPDATE YEAR",
+      payload: {
+        selectedDate: add1ToYear(),
+        selectedDay: 1
+      }
+    });
   }
 
   const previousYearBtnHandler = () => {
-    dispatch({ type: "PREVIOUS YEAR", payload: -1 });
+    dispatch({
+      type: "UPDATE YEAR",
+      payload: {
+        selectedDate: subtract1FromYear(),
+        selectedDay: 1
+      }
+    });
   }
 
   const nextMonthBtnHandler = () => {
@@ -80,7 +104,7 @@ const Calendar = () => {
           <div className={classes.yearArrowLeft}></div>
         </div>
         <div className={classes.yearTextContainer} onClick={yearDropdownHandler}>
-          <p className={classes.yearText}>{yearText}</p>
+          <p className={classes.yearText}>{selectedYear}</p>
         </div>
 
         <div className={classes.yearArrowContainerRight} onClick={nextYearBtnHandler}>
@@ -92,7 +116,7 @@ const Calendar = () => {
           <div className={classes.arrowLeft}></div>
         </div>
         <div className={classes.monthTextContainer}>
-          <p className={classes.monthText} id={"monthText"}>{monthText}</p>
+          <p className={classes.monthText} id={"monthText"}>{selectedMonthAsText}</p>
         </div>
         <div className={classes.arrowContainerRight} onClick={nextMonthBtnHandler}>
           <div className={classes.arrowRight}></div>

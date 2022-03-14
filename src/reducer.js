@@ -18,13 +18,8 @@ const initialDateState = {
 
 export const dateReducer = (state = initialDateState, action) => {
     switch (action.type) {
-        case "NEXT YEAR": {
-            // return { ...state, selectedDate: yearCalculator(state.selectedDate, 1) };
-            return yearUpdater(state, action.payload);
-        }
-        case "PREVIOUS YEAR": {
-            // return { ...state, selectedDate: yearCalculator(state.selectedDate, -1) };
-            return yearUpdater(state, action.payload);
+        case "UPDATE YEAR":{
+            return { ...state, selectedDate: action.payload.selectedDate, selectedDay: action.payload.selectedDay }
         }
         case "NEXT MONTH": {
             return monthUpdater(state, action.payload);
@@ -42,7 +37,7 @@ export const dateReducer = (state = initialDateState, action) => {
 
 }
 
-const yearUpdater = (state, payload) =>{
+const yearUpdater = (state, payload) => {
     let dateObject = dateObjectFromString(state.selectedDate);
     let newDateObject = yearCalculator(dateObject, payload);
     let newDateString = stringFromDateObject(newDateObject);

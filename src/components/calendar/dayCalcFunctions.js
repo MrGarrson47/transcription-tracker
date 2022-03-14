@@ -2,14 +2,6 @@
 const daysInEachMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
-//have to seperate functions that return html, and functions that generate data which is needed for the html
-
-// get the total days in the selected month -- done (use getThisMonth)
-// get the days in the previous month -- done (use getThisMonth)
-// get the first weekday of the selected month -- done
-// get the dates of the days, from the previous month, that need to be shown on the calendar -- done
-// get the total amount of 'days' (previous months last days + selected month days) -- done
-
 export const getDateObjectFromString = (dateString) => new Date(dateString);
 
 export const getTotalDaysForCalendar = (currentDateString) => {
@@ -17,7 +9,6 @@ export const getTotalDaysForCalendar = (currentDateString) => {
     let arrayOfDatesForPrevMonth = getDatesFromPrevMonthToInclude(currentDateAsObject);
     let arrayOfDatesForCurrentMonth = getDatesInSelectedMonth(currentDateAsObject);
     let arrayOfDatesForNextMonth = getDatesInNextMonth(currentDateAsObject);
-    // return [...getDatesFromPrevMonthToInclude(currentDateAsObject), ...getDatesInSelectedMonth(currentDateAsObject), ...getDatesInNextMonth(currentDateAsObject)];
     return {
         totalDaysArray: [...arrayOfDatesForPrevMonth, ...arrayOfDatesForCurrentMonth, ...arrayOfDatesForNextMonth],
         countOfDaysInPrevMonth: arrayOfDatesForPrevMonth.length,
