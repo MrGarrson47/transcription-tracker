@@ -1,0 +1,14 @@
+.mainContainer{
+    width: 50%;
+    min-width: 480px;
+    margin: auto;
+}
+
+.tabsMainContainer{
+    display: flex;
+    justify-content: space-around;
+}
+
+
+
+
