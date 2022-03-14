@@ -1,95 +1,61 @@
+const getDateObjectFromString = (dateString) => new Date(dateString);
 
-const daysInEachMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
-const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+export const getDays = (currentDate) => {
+    let currentDateAsObject = getDateObjectFromString(currentDate);
+    let arrayOfDatesForPrevMonth = getArrayOfDaysInPrevMonth(currentDateAsObject);
+    let arrayOfDatesForCurrentMonth = getArrayOfDaysInCurrentMonth(currentDateAsObject);
+    let arrayOfDatesForNextMonth = getArrayOfDaysInNextMonth(currentDateAsObject);
 
-export const getDateObjectFromString = (dateString) => new Date(dateString);
-
-export const getTotalDaysForCalendar = (currentDateString) => {
-    let currentDateAsObject = getDateObjectFromString(currentDateString);
-    let arrayOfDatesForPrevMonth = getDatesFromPrevMonthToInclude(currentDateAsObject);
-    let arrayOfDatesForCurrentMonth = getDatesInSelectedMonth(currentDateAsObject);
-    let arrayOfDatesForNextMonth = getDatesInNextMonth(currentDateAsObject);
     return {
         totalDaysArray: [...arrayOfDatesForPrevMonth, ...arrayOfDatesForCurrentMonth, ...arrayOfDatesForNextMonth],
         countOfDaysInPrevMonth: arrayOfDatesForPrevMonth.length,
         countOfDaysInCurrentMonth: arrayOfDatesForCurrentMonth.length,
         countOfDaysInNextMonth: arrayOfDatesForNextMonth.length
     }
-
 }
 
-const getDatesFromPrevMonthToInclude = (currentDate) => {
-    let totalDaysOfPrevMonth = getDaysInPrevMonth(currentDate);
-    let numberOfDaysToInclude = getFirstWeekdayOfMonthAsIndex(currentDate);
+const getArrayOfDaysInPrevMonth = (currentDate) => {
+    let daysInPrevMonth = getCountOfDaysInPrevMonth(currentDate);
+    let firstWeekDayOfCurrentMonth = getFirstWeekdayOfCurrentMonthAsIndex(currentDate);
     let arrayOfDays = [];
-
-    for (numberOfDaysToInclude; numberOfDaysToInclude > 0; numberOfDaysToInclude--) {
-        arrayOfDays.unshift(totalDaysOfPrevMonth);
-        totalDaysOfPrevMonth--;
+    for (firstWeekDayOfCurrentMonth; firstWeekDayOfCurrentMonth > 0; firstWeekDayOfCurrentMonth--) {
+        arrayOfDays.unshift(daysInPrevMonth);
+        daysInPrevMonth--;
     }
     return arrayOfDays;
 }
 
-const getDatesInNextMonth = (currentDate) => {
-    let indexOfStartingDay = getFirstWeekdayOfMonthAsIndex(currentDate);
-    let daysInCurrentMonth = getDaysInThisMonth(currentDate);
-    let sumOfPrevDaysAndCurrentDays = indexOfStartingDay + daysInCurrentMonth;
+const getArrayOfDaysInCurrentMonth = (currentDate) => {
+    let daysInCurrentMonth = getCountOfDaysInCurrentMonth(currentDate);
     let arrayOfDays = [];
-    if (sumOfPrevDaysAndCurrentDays > 35) {
-        for (let i = 0; i < (42 - sumOfPrevDaysAndCurrentDays); i++) {
-            arrayOfDays.push(i + 1);
-        }
+    for (let i = 0; i < daysInCurrentMonth; i++) {
+        arrayOfDays.push(i + 1);
     }
-    else {
-        for (let i = 0; i < (35 - sumOfPrevDaysAndCurrentDays); i++) {
-            arrayOfDays.push(i + 1);
-        }
-    }
-
     return arrayOfDays;
 }
 
-// get the total days in the selected month
-const getDatesInSelectedMonth = (currentDate) => {
-    let dayCount = getDaysInThisMonth(currentDate);
-    if (monthIsFebInLeapYear(currentDate)) {
-        dayCount++;
+const getArrayOfDaysInNextMonth = (currentDate) => {
+    let daysToAdd = 6 - getLastWeekdayOfCurrentMonthAsIndex(currentDate);
+    let arrayOfDays = [];
+    for (let i = 0; i < daysToAdd; i++) {
+        arrayOfDays.push(i + 1);
     }
-    let arrayOfDayDates = [];
-    for (let i = 0; i < dayCount; i++) {
-        arrayOfDayDates.push(i + 1);
-    }
-    return arrayOfDayDates;
-};
-
-// get this month
-const getThisMonth = (currentDate) => currentDate.getMonth();
-
-export const getDaysInThisMonth = (currentDate) => daysInEachMonth[getThisMonth(currentDate)];
-
-// get the days in the previous month
-const getDaysInPrevMonth = (currentDate) => {
-    if (getThisMonth(currentDate) === 0) {
-        return daysInEachMonth[11];
-    }
-    // check for leap year
-    if (monthIsFebInLeapYear(new Date(currentDate.getFullYear(), getThisMonth(currentDate) - 1, 1))) {
-        return daysInEachMonth[getThisMonth(currentDate) - 1] + 1;
-    }
-    return daysInEachMonth[getThisMonth(currentDate) - 1];
+    return arrayOfDays;
 }
 
-// get the first weekday of the selected month
-export const getFirstWeekdayOfMonthAsIndex = (currentDate) => {
-    let newDate = new Date(currentDate.getFullYear(), getThisMonth(currentDate), 1);
+const getCountOfDaysInPrevMonth = (currentDate) => {
+    return new Date(currentDate.getFullYear(), currentDate.getMonth(), 0).getDate();
+}
+
+const getCountOfDaysInCurrentMonth = (currentDate) => {
+    return new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
+}
+
+const getLastWeekdayOfCurrentMonthAsIndex = (currentDate) => {
+    return new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDay();
+}
+
+const getFirstWeekdayOfCurrentMonthAsIndex = (currentDate) => {
+    let newDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
     return newDate.getDay();
-}
-
-const monthIsFebInLeapYear = (currentDate) => {
-    let year = currentDate.getFullYear();
-    let month = currentDate.getMonth();
-    if (month === 1 && ((year % 4 === 0) || ((year / 100) % 4 === 0))) {
-        return true;
-    }
-    return false
 }

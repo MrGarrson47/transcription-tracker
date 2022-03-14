@@ -1,5 +1,5 @@
 import classes from "./Calendar.module.css";
-import { getTotalDaysForCalendar, getDateObjectFromString } from "./dayCalcFunctions";
+import { getDays, getTotalDaysForCalendar } from "./dayCalcFunctions";
 import DropdownDate from "./DropdownDate";
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
@@ -161,7 +161,7 @@ const Calendar = () => {
       </div>
       <div className={classes.daysContainer}>
         {getWeekColumnHeaders()}
-        {generateDayGridItems(getTotalDaysForCalendar(currentDate))}
+        {generateDayGridItems(getDays(currentDate))}
       </div>
     </div>
   )
