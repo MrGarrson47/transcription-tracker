@@ -19,23 +19,20 @@ const initialDateState = {
 export const dateReducer = (state = initialDateState, action) => {
     switch (action.type) {
         case "NEXT YEAR": {
-            return { ...state, selectedDate: yearCalculator(state.selectedDate, 1) };
+            // return { ...state, selectedDate: yearCalculator(state.selectedDate, 1) };
+            return yearUpdater(state, action.payload);
         }
         case "PREVIOUS YEAR": {
-            return { ...state, selectedDate: yearCalculator(state.selectedDate, -1) };
+            // return { ...state, selectedDate: yearCalculator(state.selectedDate, -1) };
+            return yearUpdater(state, action.payload);
         }
         case "NEXT MONTH": {
-            let nextMonthNewDateObject = monthCalculator(state.selectedDate, 1);
-            let nextMonthNewDaysCount = daysInEachMonth[nextMonthNewDateObject.getMonth()];
-            return { ...state, selectedDate: nextMonthNewDateObject, daysInEachMonth: nextMonthNewDaysCount };
+            return monthUpdater(state, action.payload);
         }
         case "PREVIOUS MONTH": {
-            let previousMonthNewDateObject = monthCalculator(state.selectedDate, -1);
-            let previousMonthNewDaysCount = daysInEachMonth[previousMonthNewDateObject.getMonth()];
-            return { ...state, selectedDate: previousMonthNewDateObject, daysInEachMonth: previousMonthNewDaysCount };
+            return monthUpdater(state, action.payload);
         }
         case "SELECT DAY": {
-            // return { ...state, selectedDay: action.payload, selectedDate: new Date(state.selectedDate.getFullYear(), state.selectedDate.getMonth(), action.payload) }
             return selectDayUpdater(state, action.payload)
         }
         default: {
@@ -43,6 +40,28 @@ export const dateReducer = (state = initialDateState, action) => {
         }
     }
 
+}
+
+const yearUpdater = (state, payload) =>{
+    let dateObject = dateObjectFromString(state.selectedDate);
+    let newDateObject = yearCalculator(dateObject, payload);
+    let newDateString = stringFromDateObject(newDateObject);
+    return {
+        ...state,
+        selectedDate: newDateString,
+        selectedDay: 1
+    }
+}
+
+const monthUpdater = (state, payload) => {
+    let dateObject = dateObjectFromString(state.selectedDate);
+    let newDateObject = monthCalculator(dateObject, payload);
+    let newDateString = stringFromDateObject(newDateObject)
+    return {
+        ...state,
+        selectedDate: newDateString,
+        selectedDay: 1
+    }
 }
 
 

@@ -10,11 +10,20 @@ const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 // get the dates of the days, from the previous month, that need to be shown on the calendar -- done
 // get the total amount of 'days' (previous months last days + selected month days) -- done
 
-export const getDateObjectFromString = (dateString)=> new Date(dateString);
+export const getDateObjectFromString = (dateString) => new Date(dateString);
 
 export const getTotalDaysForCalendar = (currentDateString) => {
     let currentDateAsObject = getDateObjectFromString(currentDateString);
-    return [...getDatesFromPrevMonthToInclude(currentDateAsObject), ...getDatesInSelectedMonth(currentDateAsObject), ...getDatesInNextMonth(currentDateAsObject)];
+    let arrayOfDatesForPrevMonth = getDatesFromPrevMonthToInclude(currentDateAsObject);
+    let arrayOfDatesForCurrentMonth = getDatesInSelectedMonth(currentDateAsObject);
+    let arrayOfDatesForNextMonth = getDatesInNextMonth(currentDateAsObject);
+    // return [...getDatesFromPrevMonthToInclude(currentDateAsObject), ...getDatesInSelectedMonth(currentDateAsObject), ...getDatesInNextMonth(currentDateAsObject)];
+    return {
+        totalDaysArray: [...arrayOfDatesForPrevMonth, ...arrayOfDatesForCurrentMonth, ...arrayOfDatesForNextMonth],
+        countOfDaysInPrevMonth: arrayOfDatesForPrevMonth.length,
+        countOfDaysInCurrentMonth: arrayOfDatesForCurrentMonth.length,
+        countOfDaysInNextMonth: arrayOfDatesForNextMonth.length
+    }
 
 }
 

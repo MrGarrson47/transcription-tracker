@@ -15,33 +15,27 @@ const Calendar = () => {
   const [showYearDropdown, setShowYearDropdown] = useState(false);
   const dispatch = useDispatch();
 
-  // let dateString = currentDate.toString();
-  // let dateObjectFromString = new Date(dateString);
-
-  // console.log(dateObjectFromString.getFullYear())
-
   const yearDropdownHandler = () => {
     setShowYearDropdown(state => !state);
   }
 
   const nextYearBtnHandler = () => {
-    dispatch({ type: "NEXT YEAR" });
+    dispatch({ type: "NEXT YEAR", payload: 1 });
   }
 
   const previousYearBtnHandler = () => {
-    dispatch({ type: "PREVIOUS YEAR" });
+    dispatch({ type: "PREVIOUS YEAR", payload: -1 });
   }
 
   const nextMonthBtnHandler = () => {
-    dispatch({ type: "NEXT MONTH" });
+    dispatch({ type: "NEXT MONTH", payload: 1 });
   }
 
   const previousMonthBtnHandler = () => {
-    dispatch({ type: "PREVIOUS MONTH" })
+    dispatch({ type: "PREVIOUS MONTH", payload: -1 })
   }
 
   const selectDayHandler = (e) => {
-    //dispatch({ type: "SELECT DAY", payload: parseInt(e.target.id) });
     let idString = e.target.id;
     let idArray = idString.split("-");
     let [targetDate, indexOfDayInGrid, gridLength] = idArray;
@@ -52,16 +46,30 @@ const Calendar = () => {
     return weekDays.map(day => <div className={classes.weekHeader}><p className={classes.weekHeaderText}>{day}</p></div>)
   }
 
-  const generateDayGridItems = (totalDays) => {
-    let indexOfNextMonthsBlanks = getFirstWeekdayOfMonthAsIndex(currentDate) + getDaysInThisMonth(currentDate);
-    let classToUse;
+  const isBlankDay = (indexOfDay, totalDaysObject) => {
+    let { countOfDaysInPrevMonth, countOfDaysInCurrentMonth } = totalDaysObject;
+    if (indexOfDay < countOfDaysInPrevMonth || (indexOfDay >= countOfDaysInPrevMonth + countOfDaysInCurrentMonth)) {
+      return true;
+    }
+    return false;
+  }
+
+  const generateDayGridItems = (totalDaysObject) => {
+    let totalDays = totalDaysObject.totalDaysArray;
     return totalDays.map((day, index) => {
-      if ((index < getFirstWeekdayOfMonthAsIndex(currentDate)) || index >= indexOfNextMonthsBlanks) {
-        return <div className={classes.dayBlank} id={index - 1}><p className={classes.dayText}>{day}</p></div>
+      if (isBlankDay(index, totalDaysObject)) {
+        return getBlankDay(day, index, totalDays.length);
       }
-      classToUse = index - 1 === selectedDay ? classes.dayActive : classes.dayPassive;
-      return <div onClick={selectDayHandler} className={classToUse} id={`${day}-${index}-${totalDays.length}`}><p className={classes.dayText}>{day}</p></div>
+      return getCalendarDay(day, index, totalDays.length)
     })
+  }
+
+  const getBlankDay = (day, index, totalDays) => {
+    return <div className={classes.dayBlank} id={`${day}-${index}-${totalDays}`}><p className={classes.dayText}>{day}</p></div>
+  }
+
+  const getCalendarDay = (day, index, totalDays) => {
+    return <div onClick={selectDayHandler} className={day === selectedDay ? classes.dayActive : classes.dayPassive} id={`${day}-${index}-${totalDays}`}><p className={classes.dayText}>{day}</p></div>
   }
 
   return (
