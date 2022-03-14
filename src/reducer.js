@@ -1,5 +1,3 @@
-import { dateObjectFromString, stringFromDateObject } from "./generalDateFunctions";
-
 let currentDate = new Date().toString();
 let currentDay = new Date().getDate();
 let currentMonth = new Date().getMonth();
@@ -18,10 +16,11 @@ const initialDateState = {
 export const dateReducer = (state = initialDateState, action) => {
     switch (action.type) {
         case "UPDATE DATE": {
-            return { ...state, selectedDate: action.payload.selectedDate, selectedDay: action.payload.selectedDay }
-        }
-        case "SELECT DAY": {
-            return selectDayUpdater(state, action.payload)
+            return {
+                ...state,
+                selectedDate: action.payload.selectedDate,
+                selectedDay: action.payload.selectedDay
+            }
         }
         default: {
             return state;
@@ -30,16 +29,6 @@ export const dateReducer = (state = initialDateState, action) => {
 
 }
 
-const selectDayUpdater = (state, payload) => {
-    let dateObject = dateObjectFromString(state.selectedDate);
-    let newDateObject = new Date(dateObject.getFullYear(), dateObject.getMonth(), payload);
-    let newDateString = stringFromDateObject(newDateObject);
-    return {
-        ...state,
-        selectedDay: payload,
-        selectedDate: newDateString
-    }
-}
 
 
 

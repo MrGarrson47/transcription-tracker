@@ -3,13 +3,13 @@ import { getTotalDaysForCalendar, getDateObjectFromString } from "./dayCalcFunct
 import DropdownDate from "./DropdownDate";
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { stringFromDateObject } from "../../generalDateFunctions";
+import { stringFromDateObject, dateObjectFromString } from "../../generalDateFunctions";
 
 const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 const Calendar = () => {
-  const currentDate = getDateObjectFromString(useSelector((state) => state.selectedDate))
+  const currentDate = dateObjectFromString(useSelector((state) => state.selectedDate))
   const selectedDay = useSelector((state) => state.selectedDay)
   const selectedYear = currentDate.getFullYear();
   const selectedMonth = currentDate.getMonth();
@@ -22,21 +22,31 @@ const Calendar = () => {
     return stringFromDateObject(new Date(newYear, selectedMonth, 1));
   }
 
-  const subtract1Year = () =>{
+  const subtract1Year = () => {
     let newYear = selectedYear - 1;
     return stringFromDateObject(new Date(newYear, selectedMonth, 1));
   }
 
-  const add1Month = () =>{
+  const add1Month = () => {
     let newMonth = selectedMonth + 1;
     newMonth = newMonth > 11 ? 0 : newMonth < 0 ? 11 : newMonth;
     return stringFromDateObject(new Date(selectedYear, newMonth, 1));
   }
 
-  const subtract1Month = () =>{
+  const subtract1Month = () => {
     let newMonth = selectedMonth - 1;
     newMonth = newMonth > 11 ? 0 : newMonth < 0 ? 11 : newMonth;
     return stringFromDateObject(new Date(selectedYear, newMonth, 1));
+  }
+
+  const chooseDay = (e)=>{
+    let idString = e.target.id;
+    let idArray = idString.split("-");
+    let [day, indexOfDayInGrid, gridLength] = idArray;
+
+    let newDateObject = new Date(selectedYear, selectedMonth, day);
+    let newDateString = stringFromDateObject(newDateObject);
+    return [day, newDateString];
   }
 
   const yearDropdownHandler = () => {
@@ -84,10 +94,13 @@ const Calendar = () => {
   }
 
   const selectDayHandler = (e) => {
-    let idString = e.target.id;
-    let idArray = idString.split("-");
-    let [targetDate, indexOfDayInGrid, gridLength] = idArray;
-    dispatch({ type: "SELECT DAY", payload: parseInt(targetDate) });
+    let [day, newDateString] = chooseDay(e)
+    dispatch({
+      type: "UPDATE DATE", payload: {
+        selectedDay: day,
+        selectedDate: newDateString
+      }
+    })
   }
 
   const getWeekColumnHeaders = () => {
@@ -117,7 +130,7 @@ const Calendar = () => {
   }
 
   const getCalendarDay = (day, index, totalDays) => {
-    return <div key={`day-${index}`} onClick={selectDayHandler} className={day === selectedDay ? classes.dayActive : classes.dayPassive} id={`${day}-${index}-${totalDays}`}><p className={classes.dayText}>{day}</p></div>
+    return <div key={`day-${index}`} onClick={selectDayHandler} className={day == selectedDay ? classes.dayActive : classes.dayPassive} id={`${day}-${index}-${totalDays}`}><p className={classes.dayText}>{day}</p></div>
   }
 
   return (
