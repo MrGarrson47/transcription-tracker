@@ -1,0 +1,82 @@
+.monthContainer{
+    display: grid;
+    grid-template-columns: 5% 90% 5%;
+    background-color: #1d6bfb;
+    padding: 5px;
+    
+}
+
+.monthTextContainer{
+    grid-column-start: 2;
+    grid-column-end: 2;
+    position: relative;
+    height: 31px;
+}
+
+.monthTextContainer:hover{
+    cursor: pointer;
+    background-color: #3a7fff;
+}
+
+.monthText{
+    text-align: center;
+    margin: 0;
+    color: white;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: 700;
+    font-size: 20px;
+    user-select: none;
+    position: absolute;
+    pointer-events: none;
+}
+
+.arrowContainerLeft{
+    grid-column-start: 1;
+    grid-column-end: 1;
+    background-color: #1d6bfb;
+    transition: background-color 150ms ease-in;
+}
+
+.arrowContainerRight{
+    grid-column-start: 3;
+    grid-column-end: 3;
+    background-color: #1d6bfb;
+    transition: background-color 150ms ease-in;
+}
+
+.arrowContainerLeft:hover, .arrowContainerRight:hover{
+    background-color: #4786fb;
+    cursor: pointer;
+}
+
+.arrowContainerRight:hover .arrowRight{
+    transform: scale(1.2,1.2) translate(40%, 20%);
+}
+
+.arrowContainerLeft:hover .arrowLeft{
+    transform: scale(1.2,1.2) translate(-40%, 20%);
+}
+
+.arrowContainerLeft:active .arrowLeft{
+    border-right-color: #FBAD1D;
+}
+
+.arrowContainerRight:active .arrowRight{
+    border-left-color: #FBAD1D;
+}
+
+.arrowRight, .arrowLeft{
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    transition: transform 150ms ease-in, border-color 150ms ease-in;
+}
+
+.arrowRight{
+    border-left: 10px solid white;
+    transform: translate(40%, 40%);
+}
+
+.arrowLeft{
+    border-right: 10px solid white;
+    transform: translate(-40%, 40%);
+}

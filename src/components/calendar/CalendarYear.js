@@ -20,8 +20,8 @@ const CalendarYear = () => {
         animate: (custom) => custom === "RIGHT" ?
             { top: "50%", translateY: "-50%", left: "50%", translateX: "-50%", opacity: 1 } : { top: "50%", translateY: "-50%", left: "50%", translateX: "-50%", opacity: 1 },
         exit: (custom) => custom === "RIGHT" ?
-            { top: "50%", translateY: "-50%", left: "130%", translateX: "0%", opacity: 0.5 } :
-            { top: "50%", translateY: "-50%", left: "-130%", translateX: "0%", opacity: 0.5 }
+            { top: "50%", translateY: "-50%", left: "130%", translateX: "0%", opacity: 0.3 } :
+            { top: "50%", translateY: "-50%", left: "-30%", translateX: "0%", opacity: 0.3 }
     }
 
     const add1Year = () => {
@@ -63,7 +63,7 @@ const CalendarYear = () => {
                 <div className={classes.yearArrowLeft}></div>
             </div>
             <div className={classes.yearTextContainer}>
-                <AnimatePresence custom={direction}>
+                <AnimatePresence initial={false} custom={direction}>
                     <motion.p
                         className={classes.yearText} id={"yearText"}
                         custom={direction}
