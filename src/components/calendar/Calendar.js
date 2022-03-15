@@ -19,6 +19,8 @@ const Calendar = () => {
   const dispatch = useDispatch();
   const monthAnimateRight = useSelector(state=>state.monthAnimateRight);
   const monthKey = useSelector((state)=> state.monthKey);
+  const yearAnimateRight = useSelector(state=>state.yearAnimateRight);
+  const yearKey = useSelector((state)=> state.yearKey);
 
   const variants = {
     initialGoingRight: {top: "50%", translateY: "-50%", left: "-50%", opacity: 0.5},
@@ -70,7 +72,9 @@ const Calendar = () => {
       type: "UPDATE DATE",
       payload: {
         selectedDate: add1Year(),
-        selectedDay: 1
+        selectedDay: 1,
+        yearKey: yearKey +1,
+        yearAnimateRight: "YES"
       }
     });
   }
@@ -80,7 +84,9 @@ const Calendar = () => {
       type: "UPDATE DATE",
       payload: {
         selectedDate: subtract1Year(),
-        selectedDay: 1
+        selectedDay: 1,
+        yearKey: yearKey +1,
+        yearAnimateRight: "NO"
       }
     });
   }
@@ -157,7 +163,19 @@ const Calendar = () => {
           <div className={classes.yearArrowLeft}></div>
         </div>
         <div className={classes.yearTextContainer} onClick={yearDropdownHandler}>
-          <p className={classes.yearText}>{selectedYear}</p>
+        <AnimatePresence>
+            <motion.p
+              key={yearKey}
+              className={classes.yearText} id={"yearText"}
+              variants={variants}
+              initial={yearAnimateRight === "YES" ? "initialGoingRight": "initialGoingLeft"}
+              animate={yearAnimateRight === "YES" ? "animateGoingRight": "animateGoingLeft"}
+              exit={yearAnimateRight === "YES" ? "exitGoingRight": "exitGoingLeft"}
+              transition={{duration: .5}}
+            >
+              {selectedYear}
+            </motion.p>
+          </AnimatePresence>
         </div>
 
         <div className={classes.yearArrowContainerRight} onClick={nextYearBtnHandler}>

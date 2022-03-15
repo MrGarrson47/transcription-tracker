@@ -9,6 +9,8 @@ const initialDateState = {
     selectedDay: currentDay,
     monthKey: 1,
     monthAnimateRight: "YES",
+    yearKey: 1,
+    yearAnimateRight: "YES",
     // need to remove all mentions of daysInEachMonth in state, not using it anywhere
     daysInEachMonth: daysInEachMonth[currentMonth]
 }
@@ -24,6 +26,8 @@ export const dateReducer = (state = initialDateState, action) => {
                 selectedDay: action.payload.selectedDay,
                 monthKey: action.payload.monthKey || state.monthKey,
                 monthAnimateRight: action.payload.monthAnimateRight || state.monthAnimateRight,
+                yearKey: action.payload.yearKey || state.yearKey,
+                yearAnimateRight: action.payload.yearAnimateRight || state.yearAnimateRight,
             }
         }
         default: {
