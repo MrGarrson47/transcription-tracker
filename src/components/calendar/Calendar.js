@@ -1,8 +1,9 @@
 import classes from "./Calendar.module.css";
-import { getDays, getTotalDaysForCalendar } from "./dayCalcFunctions";
+import { getDays } from "./dayCalcFunctions";
 import DropdownDate from "./DropdownDate";
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { motion, AnimatePresence } from "framer-motion";
 import { stringFromDateObject, dateObjectFromString } from "../../generalDateFunctions";
 
 const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -16,6 +17,17 @@ const Calendar = () => {
   const selectedMonthAsText = months[currentDate.getMonth()];
   const [showYearDropdown, setShowYearDropdown] = useState(false);
   const dispatch = useDispatch();
+  const monthAnimateRight = useSelector(state=>state.monthAnimateRight);
+  const monthKey = useSelector((state)=> state.monthKey);
+
+  const variants = {
+    initialGoingRight: {top: "50%", translateY: "-50%", left: "-50%", opacity: 0.5},
+    initialGoingLeft: {top: "50%", translateY: "-50%", right: "0%", opacity: 0.5},
+    animateGoingRight: {top: "50%", translateY: "-50%", left: "50%", translateX: "-50%", opacity: 1},
+    animateGoingLeft: {top: "50%", translateY: "-50%", right: "50%", translateX: "50%", opacity: 1},
+    exitGoingRight: {top: "50%", translateY: "-50%", left: "130%", opacity: 0.5},
+    exitGoingLeft: {top: "50%", translateY: "-50%", right: "130%", opacity: 0.5}
+  }
 
   const add1Year = () => {
     let newYear = selectedYear + 1;
@@ -39,7 +51,7 @@ const Calendar = () => {
     return stringFromDateObject(new Date(selectedYear, newMonth, 1));
   }
 
-  const chooseDay = (e)=>{
+  const chooseDay = (e) => {
     let idString = e.target.id;
     let idArray = idString.split("-");
     let [day, indexOfDayInGrid, gridLength] = idArray;
@@ -78,7 +90,9 @@ const Calendar = () => {
       type: "UPDATE DATE",
       payload: {
         selectedDate: add1Month(),
-        selectedDay: 1
+        selectedDay: 1,
+        monthKey: monthKey +1,
+        monthAnimateRight: "YES"
       }
     });
   }
@@ -88,7 +102,9 @@ const Calendar = () => {
       type: "UPDATE DATE",
       payload: {
         selectedDate: subtract1Month(),
-        selectedDay: 1
+        selectedDay: 1,
+        monthKey: monthKey +1,
+        monthAnimateRight: "NO"
       }
     });
   }
@@ -153,7 +169,19 @@ const Calendar = () => {
           <div className={classes.arrowLeft}></div>
         </div>
         <div className={classes.monthTextContainer}>
-          <p className={classes.monthText} id={"monthText"}>{selectedMonthAsText}</p>
+          <AnimatePresence>
+            <motion.p
+              key={monthKey}
+              className={classes.monthText} id={"monthText"}
+              variants={variants}
+              initial={monthAnimateRight === "YES" ? "initialGoingRight": "initialGoingLeft"}
+              animate={monthAnimateRight === "YES" ? "animateGoingRight": "animateGoingLeft"}
+              exit={monthAnimateRight === "YES" ? "exitGoingRight": "exitGoingLeft"}
+              transition={{duration: .5}}
+            >
+              {selectedMonthAsText}
+            </motion.p>
+          </AnimatePresence>
         </div>
         <div className={classes.arrowContainerRight} onClick={nextMonthBtnHandler}>
           <div className={classes.arrowRight}></div>

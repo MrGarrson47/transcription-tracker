@@ -10,11 +10,14 @@
     grid-template-columns: 5% 90% 5%;
     background-color: #1d6bfb;
     padding: 5px;
+    
 }
 
 .monthTextContainer{
     grid-column-start: 2;
     grid-column-end: 2;
+    position: relative;
+    height: 31px;
 }
 
 .monthTextContainer:hover{
@@ -25,13 +28,12 @@
 .monthText{
     text-align: center;
     margin: 0;
-    padding-bottom: 4px;
-    padding-top: 4px;
     color: white;
     font-family: 'Courier New', Courier, monospace;
     font-weight: 700;
     font-size: 20px;
     user-select: none;
+    position: absolute;
 }
 
 .arrowContainerLeft{
