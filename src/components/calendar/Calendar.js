@@ -5,6 +5,7 @@ import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { motion, AnimatePresence } from "framer-motion";
 import { stringFromDateObject, dateObjectFromString } from "../../generalDateFunctions";
+import CalendarYear from "./CalendarYear";
 
 const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -15,30 +16,17 @@ const Calendar = () => {
   const selectedYear = currentDate.getFullYear();
   const selectedMonth = currentDate.getMonth();
   const selectedMonthAsText = months[currentDate.getMonth()];
-  const [showYearDropdown, setShowYearDropdown] = useState(false);
   const dispatch = useDispatch();
-  const monthAnimateRight = useSelector(state=>state.monthAnimateRight);
-  const monthKey = useSelector((state)=> state.monthKey);
-  const yearAnimateRight = useSelector(state=>state.yearAnimateRight);
-  const yearKey = useSelector((state)=> state.yearKey);
+  const monthAnimateRight = useSelector(state => state.monthAnimateRight);
+  const monthKey = useSelector((state) => state.monthKey);
 
   const variants = {
-    initialGoingRight: {top: "50%", translateY: "-50%", left: "-50%", opacity: 0.5},
-    initialGoingLeft: {top: "50%", translateY: "-50%", right: "0%", opacity: 0.5},
-    animateGoingRight: {top: "50%", translateY: "-50%", left: "50%", translateX: "-50%", opacity: 1},
-    animateGoingLeft: {top: "50%", translateY: "-50%", right: "50%", translateX: "50%", opacity: 1},
-    exitGoingRight: {top: "50%", translateY: "-50%", left: "130%", opacity: 0.5},
-    exitGoingLeft: {top: "50%", translateY: "-50%", right: "130%", opacity: 0.5}
-  }
-
-  const add1Year = () => {
-    let newYear = selectedYear + 1;
-    return stringFromDateObject(new Date(newYear, selectedMonth, 1));
-  }
-
-  const subtract1Year = () => {
-    let newYear = selectedYear - 1;
-    return stringFromDateObject(new Date(newYear, selectedMonth, 1));
+    initialGoingRight: { top: "50%", translateY: "-50%", left: "-50%", opacity: 0.5 },
+    initialGoingLeft: { top: "50%", translateY: "-50%", right: "0%", opacity: 0.5 },
+    animateGoingRight: { top: "50%", translateY: "-50%", left: "50%", translateX: "-50%", opacity: 1 },
+    animateGoingLeft: { top: "50%", translateY: "-50%", right: "50%", translateX: "50%", opacity: 1 },
+    exitGoingRight: { top: "50%", translateY: "-50%", left: "130%", opacity: 0.5 },
+    exitGoingLeft: { top: "50%", translateY: "-50%", right: "130%", opacity: 0.5 }
   }
 
   const add1Month = () => {
@@ -63,41 +51,13 @@ const Calendar = () => {
     return [day, newDateString];
   }
 
-  const yearDropdownHandler = () => {
-    setShowYearDropdown(state => !state);
-  }
-
-  const nextYearBtnHandler = () => {
-    dispatch({
-      type: "UPDATE DATE",
-      payload: {
-        selectedDate: add1Year(),
-        selectedDay: 1,
-        yearKey: yearKey +1,
-        yearAnimateRight: "YES"
-      }
-    });
-  }
-
-  const previousYearBtnHandler = () => {
-    dispatch({
-      type: "UPDATE DATE",
-      payload: {
-        selectedDate: subtract1Year(),
-        selectedDay: 1,
-        yearKey: yearKey +1,
-        yearAnimateRight: "NO"
-      }
-    });
-  }
-
   const nextMonthBtnHandler = () => {
     dispatch({
       type: "UPDATE DATE",
       payload: {
         selectedDate: add1Month(),
         selectedDay: 1,
-        monthKey: monthKey +1,
+        monthKey: monthKey + 1,
         monthAnimateRight: "YES"
       }
     });
@@ -109,7 +69,7 @@ const Calendar = () => {
       payload: {
         selectedDate: subtract1Month(),
         selectedDay: 1,
-        monthKey: monthKey +1,
+        monthKey: monthKey + 1,
         monthAnimateRight: "NO"
       }
     });
@@ -157,31 +117,7 @@ const Calendar = () => {
 
   return (
     <div className={classes.calendarMainContainer}>
-      <div className={classes.yearContainer}>
-        <DropdownDate isOpen={showYearDropdown} />
-        <div className={classes.yearArrowContainerLeft} onClick={previousYearBtnHandler}>
-          <div className={classes.yearArrowLeft}></div>
-        </div>
-        <div className={classes.yearTextContainer} onClick={yearDropdownHandler}>
-        <AnimatePresence>
-            <motion.p
-              key={yearKey}
-              className={classes.yearText} id={"yearText"}
-              variants={variants}
-              initial={yearAnimateRight === "YES" ? "initialGoingRight": "initialGoingLeft"}
-              animate={yearAnimateRight === "YES" ? "animateGoingRight": "animateGoingLeft"}
-              exit={yearAnimateRight === "YES" ? "exitGoingRight": "exitGoingLeft"}
-              transition={{duration: .5}}
-            >
-              {selectedYear}
-            </motion.p>
-          </AnimatePresence>
-        </div>
-
-        <div className={classes.yearArrowContainerRight} onClick={nextYearBtnHandler}>
-          <div className={classes.yearArrowRight}></div>
-        </div>
-      </div>
+      <CalendarYear />
       <div className={classes.monthContainer}>
         <div className={classes.arrowContainerLeft} onClick={previousMonthBtnHandler}>
           <div className={classes.arrowLeft}></div>
@@ -192,10 +128,10 @@ const Calendar = () => {
               key={monthKey}
               className={classes.monthText} id={"monthText"}
               variants={variants}
-              initial={monthAnimateRight === "YES" ? "initialGoingRight": "initialGoingLeft"}
-              animate={monthAnimateRight === "YES" ? "animateGoingRight": "animateGoingLeft"}
-              exit={monthAnimateRight === "YES" ? "exitGoingRight": "exitGoingLeft"}
-              transition={{duration: .5}}
+              initial={monthAnimateRight === "YES" ? "initialGoingRight" : "initialGoingLeft"}
+              animate={monthAnimateRight === "YES" ? "animateGoingRight" : "animateGoingLeft"}
+              exit={monthAnimateRight === "YES" ? "exitGoingRight" : "exitGoingLeft"}
+              transition={{ duration: .5 }}
             >
               {selectedMonthAsText}
             </motion.p>

@@ -1,0 +1,79 @@
+.yearContainer{
+    display: grid;
+    grid-template-columns: 5% 90% 5%;
+    background-color: #1d6bfb;
+    padding: 5px;
+    position: relative;
+}
+
+.yearTextContainer{
+    grid-column-start: 2;
+    grid-column-end: 2;
+    position: relative;
+    height: 31px;
+}
+
+.yearTextContainer:hover{
+    cursor: pointer;
+    background-color: #3a7fff;
+}
+
+.yearText{
+    text-align: center;
+    margin: 0;
+    color: white;
+    font-family: 'Courier New', Courier, monospace;
+    font-weight: 700;
+    font-size: 15px;
+    line-height: 5px;
+    pointer-events: none;
+    user-select: none;
+    position: absolute;
+}
+
+.yearArrowContainerLeft{
+    grid-column-start: 1;
+    grid-column-end: 1;
+}
+
+.yearArrowContainerRight{
+    grid-column-start: 3;
+    grid-column-end: 3;
+}
+
+.yearArrowLeft, .yearArrowRight{
+    border-top: 10px solid transparent;
+    border-bottom: 10px solid transparent;
+    transition: transform 150ms ease-in, border-color 150ms ease-in;
+}
+
+.yearArrowLeft{
+    border-right: 10px solid white;
+    transform: translate(-40%, 40%);
+}
+
+.yearArrowRight{
+    border-left: 10px solid white;
+    transform: translate(40%, 40%);
+}
+
+.yearArrowContainerLeft:hover, .yearArrowContainerRight:hover{
+    background-color: #4786fb;
+    cursor: pointer;
+}
+
+.yearArrowContainerRight:hover .yearArrowRight{
+    transform: scale(1.2,1.2) translate(40%, 20%);
+}
+
+.yearArrowContainerLeft:hover .yearArrowLeft{
+    transform: scale(1.2,1.2) translate(-40%, 20%);
+}
+
+.yearArrowContainerLeft:active .yearArrowLeft{
+    border-right-color: #FBAD1D;
+}
+
+.yearArrowContainerRight:active .yearArrowRight{
+    border-left-color: #FBAD1D;
+}
