@@ -2,6 +2,7 @@ import classes from "./CalendarYear.module.css";
 import { stringFromDateObject, dateObjectFromString } from "../../generalDateFunctions";
 import { useSelector, useDispatch } from "react-redux";
 import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
 
 
 const CalendarYear = () => {
@@ -9,50 +10,48 @@ const CalendarYear = () => {
     const currentDate = dateObjectFromString(useSelector((state) => state.selectedDate))
     const selectedYear = currentDate.getFullYear();
     const selectedMonth = currentDate.getMonth();
-    const yearAnimateRight = useSelector(state => state.yearAnimateRight);
-    const yearKey = useSelector((state) => state.yearKey);
     const dispatch = useDispatch();
-    let goRight;
+    const [direction, setDirection] = useState("RIGHT");
 
-    const variants = {
-        initialGoingRight: { top: "50%", translateY: "-50%", left: "-50%", opacity: 0.5 },
-        initialGoingLeft: { top: "50%", translateY: "-50%", right: "0%", opacity: 0.5 },
-        animateGoingRight: { top: "50%", translateY: "-50%", left: "50%", translateX: "-50%", opacity: 1 },
-        animateGoingLeft: { top: "50%", translateY: "-50%", right: "50%", translateX: "50%", opacity: 1 },
-        exitGoingRight: { top: "50%", translateY: "-50%", left: "130%", opacity: 0.5 },
-        exitGoingLeft: { top: "50%", translateY: "-50%", right: "130%", opacity: 0.5 }
+    const variant = {
+        initial: (custom) => custom === "RIGHT" ?
+            { top: "50%", translateY: "-50%", left: "-50%", translateX: "0%", opacity: 0.5 } :
+            { top: "50%", translateY: "-50%", left: "100%", translateX: "0%", opacity: 0.5 },
+        animate: (custom) => custom === "RIGHT" ?
+            { top: "50%", translateY: "-50%", left: "50%", translateX: "-50%", opacity: 1 } : { top: "50%", translateY: "-50%", left: "50%", translateX: "-50%", opacity: 1 },
+        exit: (custom) => custom === "RIGHT" ?
+            { top: "50%", translateY: "-50%", left: "130%", translateX: "0%", opacity: 0.5 } :
+            { top: "50%", translateY: "-50%", left: "-130%", translateX: "0%", opacity: 0.5 }
     }
 
     const add1Year = () => {
         let newYear = selectedYear + 1;
         return stringFromDateObject(new Date(newYear, selectedMonth, 1));
-      }
-    
-      const subtract1Year = () => {
+    }
+
+    const subtract1Year = () => {
         let newYear = selectedYear - 1;
         return stringFromDateObject(new Date(newYear, selectedMonth, 1));
-      }
+    }
 
     const nextYearBtnHandler = () => {
+        setDirection("RIGHT");
         dispatch({
             type: "UPDATE DATE",
             payload: {
                 selectedDate: add1Year(),
-                selectedDay: 1,
-                yearKey: yearKey + 1,
-                yearAnimateRight: "YES"
+                selectedDay: 1
             }
         });
     }
 
     const previousYearBtnHandler = () => {
+        setDirection("LEFT");
         dispatch({
             type: "UPDATE DATE",
             payload: {
                 selectedDate: subtract1Year(),
-                selectedDay: 1,
-                yearKey: yearKey + 1,
-                yearAnimateRight: "NO"
+                selectedDay: 1
             }
         });
     }
@@ -64,14 +63,15 @@ const CalendarYear = () => {
                 <div className={classes.yearArrowLeft}></div>
             </div>
             <div className={classes.yearTextContainer}>
-                <AnimatePresence>
+                <AnimatePresence custom={direction}>
                     <motion.p
-                        key={yearKey}
                         className={classes.yearText} id={"yearText"}
-                        variants={variants}
-                        initial={yearAnimateRight === "YES" ? "initialGoingRight" : "initialGoingLeft"}
-                        animate={yearAnimateRight === "YES" ? "animateGoingRight" : "animateGoingLeft"}
-                        exit={yearAnimateRight === "YES" ? "exitGoingRight" : "exitGoingLeft"}
+                        custom={direction}
+                        key={selectedYear}
+                        variants={variant}
+                        initial={"initial"}
+                        animate={"animate"}
+                        exit={"exit"}
                         transition={{ duration: .5 }}
                     >
                         {selectedYear}

@@ -25,9 +25,7 @@ export const dateReducer = (state = initialDateState, action) => {
                 selectedDate: action.payload.selectedDate,
                 selectedDay: action.payload.selectedDay,
                 monthKey: action.payload.monthKey || state.monthKey,
-                monthAnimateRight: action.payload.monthAnimateRight || state.monthAnimateRight,
-                yearKey: action.payload.yearKey || state.yearKey,
-                yearAnimateRight: action.payload.yearAnimateRight || state.yearAnimateRight,
+                monthAnimateRight: action.payload.monthAnimateRight || state.monthAnimateRight
             }
         }
         default: {
