@@ -4,6 +4,17 @@ import { useSelector, useDispatch } from "react-redux";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 
+const variant = {
+    initial: (custom) => custom === "LEFT" ?
+        { top: "50%", translateY: "-50%", left: "-50%", translateX: "0%", opacity: 0.5 } :
+        { top: "50%", translateY: "-50%", left: "100%", translateX: "0%", opacity: 0.5 },
+    animate: (custom) => custom === "LEFT" ?
+        { top: "50%", translateY: "-50%", left: "50%", translateX: "-50%", opacity: 1 } : { top: "50%", translateY: "-50%", left: "50%", translateX: "-50%", opacity: 1 },
+    exit: (custom) => custom === "LEFT" ?
+        { top: "50%", translateY: "-50%", left: "130%", translateX: "0%", opacity: 0.3 } :
+        { top: "50%", translateY: "-50%", left: "-30%", translateX: "0%", opacity: 0.3 }
+}
+
 
 const CalendarYear = () => {
 
@@ -12,17 +23,6 @@ const CalendarYear = () => {
     const selectedMonth = currentDate.getMonth();
     const dispatch = useDispatch();
     const [direction, setDirection] = useState("RIGHT");
-
-    const variant = {
-        initial: (custom) => custom === "RIGHT" ?
-            { top: "50%", translateY: "-50%", left: "-50%", translateX: "0%", opacity: 0.5 } :
-            { top: "50%", translateY: "-50%", left: "100%", translateX: "0%", opacity: 0.5 },
-        animate: (custom) => custom === "RIGHT" ?
-            { top: "50%", translateY: "-50%", left: "50%", translateX: "-50%", opacity: 1 } : { top: "50%", translateY: "-50%", left: "50%", translateX: "-50%", opacity: 1 },
-        exit: (custom) => custom === "RIGHT" ?
-            { top: "50%", translateY: "-50%", left: "130%", translateX: "0%", opacity: 0.3 } :
-            { top: "50%", translateY: "-50%", left: "-30%", translateX: "0%", opacity: 0.3 }
-    }
 
     const add1Year = () => {
         let newYear = selectedYear + 1;

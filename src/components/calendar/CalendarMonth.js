@@ -7,12 +7,12 @@ import { useState } from "react";
 const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
 const variants = {
-    initial: (custom) => custom === "RIGHT" ?
+    initial: (custom) => custom === "LEFT" ?
         { top: "50%", translateY: "-50%", left: "-50%", translateX: "0%", opacity: 0.5 } :
         { top: "50%", translateY: "-50%", left: "100%", translateX: "0%", opacity: 0.5 },
-    animate: (custom) => custom === "RIGHT" ?
+    animate: (custom) => custom === "LEFT" ?
         { top: "50%", translateY: "-50%", left: "50%", translateX: "-50%", opacity: 1 } : { top: "50%", translateY: "-50%", left: "50%", translateX: "-50%", opacity: 1 },
-    exit: (custom) => custom === "RIGHT" ?
+    exit: (custom) => custom === "LEFT" ?
         { top: "50%", translateY: "-50%", left: "130%", translateX: "0%", opacity: 0.3 } :
         { top: "50%", translateY: "-50%", left: "-30%", translateX: "0%", opacity: 0.3 }
 }

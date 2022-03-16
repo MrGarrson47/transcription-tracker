@@ -1,0 +1,18 @@
+.weekHeaderContainer{
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+    padding-left: 10px;
+    padding-right: 10px;
+    
+}
+
+.weekHeaderText{
+    text-align: center;
+    color: white;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    font-family:Arial, Helvetica, sans-serif;
+    font-weight: 700;
+    margin-bottom: 0;
+}

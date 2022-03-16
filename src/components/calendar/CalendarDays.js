@@ -1,9 +1,8 @@
 import classes from "./CalendarDays.module.css";
 import { getDays } from "./dayCalcFunctions";
 import { useSelector, useDispatch } from "react-redux";
+import { motion } from "framer-motion";
 import { stringFromDateObject, dateObjectFromString } from "../../generalDateFunctions";
-
-const weekDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 
 const CalendarDays = () => {
     const currentDate = dateObjectFromString(useSelector((state) => state.selectedDate))
@@ -32,18 +31,23 @@ const CalendarDays = () => {
         return [day, newDateString];
     }
 
-    const getWeekColumnHeaders = () => {
-        return weekDays.map((day, index) => <div key={`weekHeader${index}`} className={classes.weekHeader}><p className={classes.weekHeaderText}>{day}</p></div>)
-    }
-
     const generateDayGridItems = (totalDaysObject) => {
         let totalDays = totalDaysObject.totalDaysArray;
+        let animationDelayTimings = getAnimationDelayTimings(totalDays.length);
         return totalDays.map((day, index) => {
             if (isBlankDay(index, totalDaysObject)) {
-                return getBlankDay(day, index, totalDays.length);
+                return getBlankDay(day, index, totalDays.length, animationDelayTimings[index]);
             }
-            return getCalendarDay(day, index, totalDays.length)
+            return getCalendarDay(day, index, totalDays.length, animationDelayTimings[index])
         })
+    }
+
+    const getAnimationDelayTimings = (totalDaysLength)=>{
+        let animationDelayTimings = [];
+        for (let i = 0; i < totalDaysLength; i++) {
+            animationDelayTimings.push((i + 1) / 30);
+        }
+        return animationDelayTimings;
     }
 
     const isBlankDay = (indexOfDay, totalDaysObject) => {
@@ -54,17 +58,35 @@ const CalendarDays = () => {
         return false;
     }
 
-    const getBlankDay = (day, index, totalDays) => {
-        return <div key={`blank-${index}`} className={classes.dayBlank} id={`${day}-${index}-${totalDays}`}><p className={classes.dayText}>{day}</p></div>
+    const getBlankDay = (day, index, totalDays, delay) => {
+        return <motion.div
+            key={`blank-${index}${selectedMonth}${selectedYear}`}
+            className={classes.dayBlank}
+            id={`${day}-${index}-${totalDays}`}
+            initial={{ y: -50, x: -50, opacity: 0 }}
+            animate={{ y: 0, x: 0, opacity: 1 }}
+            transition={{ duration: .4, delay: delay }}
+        >
+            <p className={classes.dayText}>{day}</p>
+        </motion.div>
     }
 
-    const getCalendarDay = (day, index, totalDays) => {
-        return <div key={`day-${index}`} onClick={selectDayHandler} className={day == selectedDay ? classes.dayActive : classes.dayPassive} id={`${day}-${index}-${totalDays}`}><p className={classes.dayText}>{day}</p></div>
+    const getCalendarDay = (day, index, totalDays, delay) => {
+        return <motion.div
+            key={`day-${index}${selectedMonth}${selectedYear}`}
+            onClick={selectDayHandler}
+            className={day == selectedDay ? classes.dayActive : classes.dayPassive}
+            id={`${day}-${index}-${totalDays}`}
+            initial={{y: -50, x: -50, opacity: 0}}
+            animate={{y: 0, x: 0, opacity: 1}}
+            transition={{duration: .4, delay: delay}}      
+        >
+            <p className={classes.dayText}>{day}</p>
+        </motion.div>
     }
 
     return (
         <div className={classes.daysContainer}>
-            {getWeekColumnHeaders()}
             {generateDayGridItems(getDays(currentDate))}
         </div>
     )
