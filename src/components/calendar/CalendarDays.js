@@ -47,6 +47,7 @@ const CalendarDays = () => {
         for (let i = 0; i < totalDaysLength; i++) {
             animationDelayTimings.push((i + 1) / 30);
         }
+        animationDelayTimings.reverse();
         return animationDelayTimings;
     }
 

@@ -2,6 +2,7 @@ import classes from "./classes.module.css";
 import { useState } from "react";
 import TabButton from "./components/tabs/TabButton";
 import Calendar from "./components/calendar/Calendar";
+import CalendarHamburger from "./components/calendar/CalendarHamburger";
 
 function App() {
 
@@ -24,10 +25,10 @@ function App() {
 
   return (
     <div className={classes.mainContainer}>
+      <CalendarHamburger/>
+      {/* <Calendar /> */}
 
-      <Calendar />
-
-      <div className={classes.tabsMainContainer}>
+      {/* <div className={classes.tabsMainContainer}>
         <TabButton
           handleOnClick={tabSelectHandler}
           id={"day"}
@@ -52,7 +53,7 @@ function App() {
           label="by year"
           isSelected={selectedTab["year"]}
         />
-      </div>
+      </div> */}
     </div>
   );
 }
