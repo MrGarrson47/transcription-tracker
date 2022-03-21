@@ -1,0 +1,38 @@
+.tabContainer{
+    background-color: rgb(30, 120, 172);
+    transition: background-color 150ms ease-in;
+}
+
+.tabContainerPassive{
+    background-color: rgb(30, 120, 172);
+    transition: background-color 150ms ease-in;
+}
+
+.tabContainerPassive:hover{
+    background-color: rgb(0, 108, 170);
+    cursor: pointer;
+}
+
+.tabContainerActive{
+    background-color: #FBAD1D;
+    transition: background-color 150ms ease-in;
+}
+
+.tabContainer:hover{
+    background-color: rgb(0, 108, 170);
+    cursor: pointer;
+}
+
+.tabTextPassive{
+    user-select: none;
+    pointer-events: none;
+    color: white;
+    text-align: center;
+}
+
+.tabTextActive{
+    user-select: none;
+    pointer-events: none;
+    color: black;
+    text-align: center;
+}
