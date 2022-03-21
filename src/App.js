@@ -3,6 +3,10 @@ import { useState } from "react";
 import TabButton from "./components/tabs/TabButton";
 import Calendar from "./components/calendar/Calendar";
 import CalendarHamburger from "./components/calendar/CalendarHamburger";
+import CSVReader from "react-csv-reader";
+import BarChart from "./components/charts/BarChart";
+
+
 
 function App() {
 
@@ -12,6 +16,9 @@ function App() {
     month: false,
     year: false
   });
+
+  const [jobsData, setJobsData] = useState(false);
+
 
   const tabSelectHandler = (e) => {
     const { id } = e.target;
@@ -23,9 +30,23 @@ function App() {
     setSelectedTab(currentTabsSelected);
   }
 
+
+
   return (
     <div className={classes.mainContainer}>
-      <CalendarHamburger/>
+      <CalendarHamburger />
+
+      <CSVReader
+        parserOptions={{
+          header: true,
+          skipEmptyLines: "greedy"
+        }}
+        onFileLoaded={(data) => setJobsData(data)} />
+
+        <BarChart jobsData={jobsData}/>
+
+
+      {/* <button onClick={getFile}>Open File</button> */}
       {/* <Calendar /> */}
 
       {/* <div className={classes.tabsMainContainer}>

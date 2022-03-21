@@ -1,0 +1,29 @@
+.mainContainer{
+    display: flex;
+}
+
+.tabsContainer{
+    display: grid;
+    grid-template-columns: 100px;
+    grid-template-rows: repeat(4, 1fr);
+}
+
+.tabContainer{
+    background-color: rgb(30, 120, 172);
+    transition: background-color 150ms ease-in;
+}
+
+.tabContainer:hover{
+    background-color: rgb(64, 132, 172);
+}
+
+.tabText{
+    user-select: none;
+    pointer-events: none;
+    color: white;
+    text-align: center;
+}
+
+.chartContainer{
+    width: 100%;
+}
