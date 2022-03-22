@@ -14,21 +14,39 @@ const BarChart = (props) => {
     const currentYear = dateObjectFromString(useSelector(state => state.currentYear));
     const selectedDay = useSelector(state => state.selectedDay);
 
-    const [selectedTab, setSelectedTab] = useState({
+    const [selectByCategoryTab, setSelectByCategoryTab] = useState({
         "Jobs Received": true,
         "Time Spent": false,
         "Avg Accuracy": false,
         "Money Earned": false
     });
 
-    const tabSelectHandler = (e) => {
+    const [selectByDateTab, setSelectByDateTab] = useState({
+        day: true,
+        month: false,
+        year: false
+      });
+    
+    
+      const dateTabHandler = (e) => {
         const { id } = e.target;
-        let currentTabsSelected = { ...selectedTab };
+        let currentTabsSelected = { ...selectByDateTab };
+        for (let key in currentTabsSelected) {
+          currentTabsSelected[key] = false;
+        }
+        currentTabsSelected[id] = true;
+        setSelectByDateTab(currentTabsSelected);
+      }
+
+
+    const categoryTabHandler = (e) => {
+        const { id } = e.target;
+        let currentTabsSelected = { ...selectByCategoryTab };
         for (let key in currentTabsSelected) {
             currentTabsSelected[key] = false;
         }
         currentTabsSelected[id] = true;
-        setSelectedTab(currentTabsSelected);
+        setSelectByCategoryTab(currentTabsSelected);
     }
 
     const getJobsForSelectedDay = () => {
@@ -95,33 +113,52 @@ const BarChart = (props) => {
     }
 
     const getData = ()=>{
-        return selectedTab["Jobs Received"] ? amountOfJobsData : selectedTab["Time Spent"] ? timeSpentData : amountOfJobsData;
+        return selectByCategoryTab["Jobs Received"] ? amountOfJobsData : selectByCategoryTab["Time Spent"] ? timeSpentData : amountOfJobsData;
     }
 
 
     return (
         <>
             <div className={classes.mainContainer}>
-                <div className={classes.tabsContainer}>
+                <div className={classes.dateTabsContainer}>
+                    <div></div>
+                    <Tab
+                        id={"day"}
+                        onClick={dateTabHandler}
+                        isActive={selectByDateTab["day"]}
+                    />
+                    <Tab
+                        id={"month"}
+                        onClick={dateTabHandler}
+                        isActive={selectByDateTab["month"]}
+                    />
+                    <Tab
+                        id={"year"}
+                        onClick={dateTabHandler}
+                        isActive={selectByDateTab["year"]}
+                    />
+                </div>
+                <div className={classes.categoriesAndChartContainers}>
+                <div className={classes.categoryTabsContainer}>
                     <Tab
                         id={"Jobs Received"}
-                        onClick={tabSelectHandler}
-                        isActive={selectedTab["Jobs Received"]}
+                        onClick={categoryTabHandler}
+                        isActive={selectByCategoryTab["Jobs Received"]}
                     />
                     <Tab
                         id={"Time Spent"}
-                        onClick={tabSelectHandler}
-                        isActive={selectedTab["Time Spent"]}
+                        onClick={categoryTabHandler}
+                        isActive={selectByCategoryTab["Time Spent"]}
                     />
                     <Tab
                         id={"Avg Accuracy"}
-                        onClick={tabSelectHandler}
-                        isActive={selectedTab["Avg Accuracy"]}
+                        onClick={categoryTabHandler}
+                        isActive={selectByCategoryTab["Avg Accuracy"]}
                     />
                     <Tab
                         id={"Money Earned"}
-                        onClick={tabSelectHandler}
-                        isActive={selectedTab["Money Earned"]}
+                        onClick={categoryTabHandler}
+                        isActive={selectByCategoryTab["Money Earned"]}
                     />
                 </div>
                 <div className={classes.chartContainer}>
@@ -140,6 +177,8 @@ const BarChart = (props) => {
                         }}
                     />
                 </div>
+                </div>
+         
 
             </div>
 

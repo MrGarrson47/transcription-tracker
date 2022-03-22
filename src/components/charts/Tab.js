@@ -3,9 +3,9 @@ import classes from "./Tab.module.css";
 
 const Tab = (props) => {
 
-    const {id, onClick, isActive} = props;
+    const {id, onClick, isActive, gridClass} = props;
 
-    let tabStyle = isActive ? classes.tabContainerActive : classes.tabContainerPassive;
+    let tabStyle = isActive ? [gridClass, classes.tabContainerActive].join(" ") : [gridClass, classes.tabContainerPassive].join(" ");
     let tabTextStyle = isActive ? classes.tabTextActive : classes.tabTextPassive;
 
     return (

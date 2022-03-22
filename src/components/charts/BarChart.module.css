@@ -1,14 +1,29 @@
-.mainContainer{
+/* .mainContainer{
     display: flex;
 }
 
-.tabsContainer{
+.chartContainer{
+    width: 100%;
+} */
+
+.mainContainer{
+    
+}
+
+.categoriesAndChartContainers{
+    display: flex;
+}
+
+.dateTabsContainer{
+    display: grid;
+    grid-template-columns: 100px 1fr 1fr 1fr;
+}
+
+.categoryTabsContainer{
     display: grid;
     grid-template-columns: 100px;
     grid-template-rows: repeat(4, 1fr);
 }
-
-
 
 .chartContainer{
     width: 100%;

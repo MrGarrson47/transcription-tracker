@@ -10,27 +10,7 @@ import BarChart from "./components/charts/BarChart";
 
 function App() {
 
-  const [selectedTab, setSelectedTab] = useState({
-    day: true,
-    week: false,
-    month: false,
-    year: false
-  });
-
   const [jobsData, setJobsData] = useState(false);
-
-
-  const tabSelectHandler = (e) => {
-    const { id } = e.target;
-    let currentTabsSelected = { ...selectedTab };
-    for (let key in currentTabsSelected) {
-      currentTabsSelected[key] = false;
-    }
-    currentTabsSelected[id] = true;
-    setSelectedTab(currentTabsSelected);
-  }
-
-
 
   return (
     <div className={classes.mainContainer}>
@@ -45,9 +25,6 @@ function App() {
 
         <BarChart jobsData={jobsData}/>
 
-
-      {/* <button onClick={getFile}>Open File</button> */}
-      {/* <Calendar /> */}
 
       {/* <div className={classes.tabsMainContainer}>
         <TabButton
