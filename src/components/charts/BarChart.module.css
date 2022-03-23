@@ -1,15 +1,3 @@
-/* .mainContainer{
-    display: flex;
-}
-
-.chartContainer{
-    width: 100%;
-} */
-
-.mainContainer{
-    
-}
-
 .categoriesAndChartContainers{
     display: flex;
 }
