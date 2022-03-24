@@ -36,32 +36,37 @@ function App() {
     const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 
     jobsData.forEach(item => {
-      if(item["Type"] === "Job"){
+      if (item["Type"] === "Job") {
         let itemDateAsObject = dateObjectFromString(item["Date Submitted"]);
-      let itemYear = itemDateAsObject.getFullYear();
-      let itemMonthAsIndex = itemDateAsObject.getMonth();
-      let itemMonth = months[itemMonthAsIndex];
-      let itemDay = itemDateAsObject.getDate();
-      let itemReceivedHour = itemDateAsObject.getHours();
-      let itemReceivedMinutes = itemDateAsObject.getMinutes();
-      let itemTimeSpent = item["Time Spent"];
-      let itemDuration = item["Duration/Units"]
-      let itemID = item["ID"];
-      let itemPay = item["Total"].slice(1);
-      let dataToUpload = {
-        day: itemDay,
-        "time received": `${itemReceivedHour}:${itemReceivedMinutes}`,
-        "time spent": itemTimeSpent,
-        duration: itemDuration,
-        pay: itemPay,
-        rejected: false,
-        accuracy: 90
+        let itemYear = itemDateAsObject.getFullYear();
+        let itemMonthAsIndex = itemDateAsObject.getMonth();
+        let itemMonth = months[itemMonthAsIndex];
+        let itemDay = itemDateAsObject.getDate();
+        let itemReceivedHour = itemDateAsObject.getHours();
+        let itemReceivedMinutes = itemDateAsObject.getMinutes();
+        let itemTimeSpent = item["Time Spent"];
+        let itemDuration = item["Duration/Units"]
+        let itemID = item["ID"];
+        let itemPay = item["Total"].slice(1);
+        let itemAccuracy = item["Changed by QA, %"].slice(0, -1)
+        
+        let dataToUpload = {
+          day: itemDay,
+          month: itemMonthAsIndex,
+          "time received": `${itemReceivedHour}:${itemReceivedMinutes}`,
+          "time spent": itemTimeSpent,
+          duration: itemDuration,
+          pay: itemPay,
+          rejected: false,
+          accuracy: 100 - parseInt(itemAccuracy)
+        }
+        
+        writeJob(itemYear, itemMonth, itemID, dataToUpload);
       }
-      writeJob(itemYear, itemMonth, itemID, dataToUpload);
-      }
-      
+
     })
   }
+
   return (
     <div className={classes.mainContainer}>
       <CalendarHamburger />
