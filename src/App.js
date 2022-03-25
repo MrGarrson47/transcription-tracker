@@ -77,8 +77,7 @@ function App() {
           skipEmptyLines: "greedy"
         }}
         onFileLoaded={(data) => setJobsData(data)} />
-
-      <BarChart jobsData={jobsData} />
+      <BarChart />
 
       <button onClick={uploadData}>upload data</button>
 

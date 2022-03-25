@@ -4,7 +4,6 @@ import { useSelector } from 'react-redux';
 import { dateObjectFromString } from '../../generalDateFunctions';
 import classes from "./BarChart.module.css"
 import { useState, useEffect } from 'react';
-import Tab from './Tab';
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, set, child, get } from "firebase/database";
 import TabsContainer from './TabsContainer';
@@ -29,7 +28,6 @@ const months = ["January", "February", "March", "April", "May", "June", "July", 
 
 
 const BarChart = (props) => {
-    const { jobsData } = props;
     const currentDateAsObject = dateObjectFromString(useSelector(state => state.selectedDate));
     const selectedYear = useSelector(state => state.selectedYear);
     const selectedDay = useSelector(state => state.selectedDay);
@@ -88,7 +86,7 @@ const BarChart = (props) => {
         setSelectByCategoryTab(currentTabsSelected);
     }
 
-    const filterByDay = () => {
+    const getJobsfilteredByDay = () => {
         if (jobData != null) {
             let jobs = [];
 
@@ -103,7 +101,7 @@ const BarChart = (props) => {
         return {};
     }
 
-    const filterByMonth = () => {
+    const getJobsfilteredByMonth = () => {
         if (jobData != null) {
             let jobs = jobData.filter(job => {
                 let jobDateAsObject = dateObjectFromString(job["Date Submitted"]);
@@ -116,63 +114,78 @@ const BarChart = (props) => {
 
     const filteredJobsByDate = () => {
         if (selectByDateTab["day"]) {
-            return filterByDay();
+            return getJobsfilteredByDay();
         }
-        if (selectByDateTab["month"]) {
-            return filterByMonth();
+        // if (selectByDateTab["month"]) {
+        //     return getJobsfilteredByMonth();
+        // }
+        // if (selectByDateTab["year"]) {
+        //     return jobData;
+        // }
+    }
+
+    const fillArrayForDaysRange = (array) => {
+        // fill array with 24 zeroes
+        for (let i = 0; i < 24; i++) {
+            array.push(0);
         }
-        if (selectByDateTab["year"]) {
-            return jobData;
+    }
+
+    const dayJobsReceived = (jobsArray, jobs) => {
+        for (let job in jobs) {
+            let [jobHour, jobMinute] = jobs[job]["time received"].split(":");
+            jobsArray[jobHour]++;
+        }
+    }
+
+    const dayTimeSpent = (jobsArray, jobs) =>{
+        for (let job in jobs) {
+            let [jobHour, jobMinute] = jobs[job]["time received"].split(":");
+            let [durationHour, durationMinute, durationSecond] = jobs[job]["time spent"].split(":");
+            jobsArray[jobHour] += parseInt(durationMinute);
+        }
+    }
+
+    const dayAvgAccuracy = (jobsArray, jobs) =>{
+        let countOfJobsInEachHour = [...jobsArray];
+        for (let job in jobs) {
+            let [jobHour, jobMinute] = jobs[job]["time received"].split(":");
+            let jobAccuracy = jobs[job]["accuracy"];
+            jobsArray[jobHour] += jobAccuracy;
+            countOfJobsInEachHour[jobHour]++;
+        }
+        // average all the jobs' accuracies that have more than one job in an hour
+        for (let i = 0; i < 24; i++) {
+            if (countOfJobsInEachHour[i] > 1) {
+                jobsArray[i] /= countOfJobsInEachHour[i];
+            }
+        }
+    }
+
+    const dayMoneyEarned = (jobsArray, jobs) =>{
+        for (let job in jobs) {
+            let [jobHour, jobMinute] = jobs[job]["time received"].split(":");
+            let jobPay = jobs[job]["pay"]
+            jobsArray[jobHour] += parseFloat(jobPay);
+
         }
     }
 
     const filteredJobsByCategory = (jobs) => {
         let jobsArray = [];
-        // dateRange is day, need to have an array of length 24, 1 for each hour in a day, increase index of hour if a job occurred in that hour
         if (selectByDateTab["day"]) {
-            // fill array with 24 zeroes
-            for (let i = 0; i < 24; i++) {
-                jobsArray.push(0);
-            }
-            // jobs received tab
+            fillArrayForDaysRange(jobsArray);
             if (selectByCategoryTab["Jobs Received"]) {
-                for (let job in jobs) {
-                    let [jobHour, jobMinute] = jobs[job]["time received"].split(":");
-                    jobsArray[jobHour]++;
-                }
+                dayJobsReceived(jobsArray, jobs)
             }
-            // time spent
             if (selectByCategoryTab["Time Spent"]) {
-                for (let job in jobs) {
-                    let [jobHour, jobMinute] = jobs[job]["time received"].split(":");
-                    let [durationHour, durationMinute, durationSecond] = jobs[job]["time spent"].split(":");
-                    jobsArray[jobHour] += parseInt(durationMinute);
-                }
+                dayTimeSpent(jobsArray, jobs)
             }
-            // avg accuracy
             if (selectByCategoryTab["Avg Accuracy"]) {
-                let countOfJobsInEachHour = [...jobsArray];
-                for (let job in jobs) {
-                    let [jobHour, jobMinute] = jobs[job]["time received"].split(":");
-                    let jobAccuracy = jobs[job]["accuracy"];
-                    jobsArray[jobHour] += jobAccuracy;
-                    countOfJobsInEachHour[jobHour]++;
-                }
-                // average out all the jobs' accuracies that have more than one job in an hour
-                for (let i = 0; i < 24; i++) {
-                    if (countOfJobsInEachHour[i] > 1) {
-                        jobsArray[i] /= countOfJobsInEachHour[i];
-                    }
-                }
+                dayAvgAccuracy(jobsArray, jobs)
             }
-            // money earned
             if (selectByCategoryTab["Money Earned"]) {
-                for (let job in jobs) {
-                    let [jobHour, jobMinute] = jobs[job]["time received"].split(":");
-                    let jobPay = jobs[job]["pay"]
-                    jobsArray[jobHour] += parseFloat(jobPay);
-
-                }
+                dayMoneyEarned(jobsArray, jobs)
             }
 
 
@@ -180,69 +193,35 @@ const BarChart = (props) => {
         return jobsArray;
     }
 
-    const newGetChartData = () => {
-        let chartData;
-        //get the fetched job data filtered by day, month, or year
-        let filteredData = filteredJobsByDate();
-        //use the above to return an object of graph data, by jobs received, time spent, avg accuracy, or money earned
-        let filteredDataByCategory = filteredJobsByCategory(filteredData);
+    const generateChartInfo = (filteredData) => {
+        let labels = selectByDateTab["day"] ? hourLabels : hourLabels;
+        let key = selectByCategoryTab["Jobs Received"] ? "Jobs Received" :
+            selectByCategoryTab["Time Spent"] ? "Time Spent" :
+                selectByCategoryTab["Avg Accuracy"] ? "Avg Accuracy" :
+                    selectByCategoryTab["Money Earned"] ? "Money Earned" : null;
 
-        if (selectByDateTab["day"] && selectByCategoryTab["Jobs Received"]) {
-            chartData = {
-                labels: hourLabels,
-                datasets: [
-                    {
-                        label: "Amount Of Jobs",
-                        backgroundColor: "green",
-                        borderWidth: 2,
-                        data: filteredDataByCategory
-                    }
-                ]
-            }
+        let color = selectByCategoryTab["Jobs Received"] ? "green" :
+            selectByCategoryTab["Time Spent"] ? "yellow" :
+                selectByCategoryTab["Avg Accuracy"] ? "red" :
+                    selectByCategoryTab["Money Earned"] ? "blue" : null;
+        return {
+            labels: labels,
+            datasets: [
+                {
+                    label: key,
+                    backgroundColor: color,
+                    borderWidth: 2,
+                    data: filteredData
+                }
+            ]
         }
+    }
 
-        if (selectByDateTab["day"] && selectByCategoryTab["Time Spent"]) {
-            chartData = {
-                labels: hourLabels,
-                datasets: [
-                    {
-                        label: "Time Spent",
-                        backgroundColor: "yellow",
-                        borderWidth: 2,
-                        data: filteredDataByCategory
-                    }
-                ]
-            }
-        }
+    const getChartData = () => {
+        let filteredByDate = filteredJobsByDate();
+        let filteredByCategory = filteredJobsByCategory(filteredByDate);
 
-        if (selectByDateTab["day"] && selectByCategoryTab["Avg Accuracy"]) {
-            chartData = {
-                labels: hourLabels,
-                datasets: [
-                    {
-                        label: "Avg Accuracy",
-                        backgroundColor: "red",
-                        borderWidth: 2,
-                        data: filteredDataByCategory
-                    }
-                ]
-            }
-        }
-
-        if (selectByDateTab["day"] && selectByCategoryTab["Money Earned"]) {
-            chartData = {
-                labels: hourLabels,
-                datasets: [
-                    {
-                        label: "Pay Earned",
-                        backgroundColor: "blue",
-                        borderWidth: 2,
-                        data: filteredDataByCategory
-                    }
-                ]
-            }
-        }
-        return chartData;
+        return generateChartInfo(filteredByCategory);
     }
 
 
@@ -268,7 +247,7 @@ const BarChart = (props) => {
                     </div>
                     <div className={classes.chartContainer}>
                         <Bar
-                            data={newGetChartData()}
+                            data={getChartData()}
                             options={{
                                 title: {
                                     display: true,
