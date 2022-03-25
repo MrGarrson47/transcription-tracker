@@ -103,11 +103,13 @@ const BarChart = (props) => {
 
     const getJobsfilteredByMonth = () => {
         if (jobData != null) {
-            let jobs = jobData.filter(job => {
-                let jobDateAsObject = dateObjectFromString(job["Date Submitted"]);
-                return jobDateAsObject.getMonth() === currentDateAsObject.getMonth();
-            })
-            return jobs;
+            // let jobs = [];
+            // for(let job in jobData){
+            //     jobs.push(jobData[job]);
+            // }
+
+            //  return jobs;
+            return jobData[months[currentDateAsObject.getMonth()]]
         }
         return {};
     }
@@ -116,9 +118,9 @@ const BarChart = (props) => {
         if (selectByDateTab["day"]) {
             return getJobsfilteredByDay();
         }
-        // if (selectByDateTab["month"]) {
-        //     return getJobsfilteredByMonth();
-        // }
+        if (selectByDateTab["month"]) {
+            return getJobsfilteredByMonth();
+        }
         // if (selectByDateTab["year"]) {
         //     return jobData;
         // }
@@ -138,7 +140,7 @@ const BarChart = (props) => {
         }
     }
 
-    const dayTimeSpent = (jobsArray, jobs) =>{
+    const dayTimeSpent = (jobsArray, jobs) => {
         for (let job in jobs) {
             let [jobHour, jobMinute] = jobs[job]["time received"].split(":");
             let [durationHour, durationMinute, durationSecond] = jobs[job]["time spent"].split(":");
@@ -146,7 +148,7 @@ const BarChart = (props) => {
         }
     }
 
-    const dayAvgAccuracy = (jobsArray, jobs) =>{
+    const dayAvgAccuracy = (jobsArray, jobs) => {
         let countOfJobsInEachHour = [...jobsArray];
         for (let job in jobs) {
             let [jobHour, jobMinute] = jobs[job]["time received"].split(":");
@@ -162,7 +164,7 @@ const BarChart = (props) => {
         }
     }
 
-    const dayMoneyEarned = (jobsArray, jobs) =>{
+    const dayMoneyEarned = (jobsArray, jobs) => {
         for (let job in jobs) {
             let [jobHour, jobMinute] = jobs[job]["time received"].split(":");
             let jobPay = jobs[job]["pay"]
@@ -187,14 +189,77 @@ const BarChart = (props) => {
             if (selectByCategoryTab["Money Earned"]) {
                 dayMoneyEarned(jobsArray, jobs)
             }
+        }
 
+        if (selectByDateTab["month"]) {
+            let jobsLength = jobs.length;
+            let newDateObject = new Date(currentDateAsObject.getFullYear(), currentDateAsObject.getMonth() + 1, 0);
+            let daysInThisMonth = newDateObject.getDate();
+            for (let i = 0; i < daysInThisMonth; i++) {
+                jobsArray.push(0);
+            }
 
+            if (selectByCategoryTab["Jobs Received"]) {
+                // for(let i = 0; i < 12; i++){
+                //     jobsArray.push(0);
+                // }
+                // for(let i = 0; i < jobsLength; i++){
+                //     for(let job in jobs[i]){
+                //         jobsArray[i] += 1;
+                //     }
+                // }
+                
+                for (let job in jobs) {
+                    let dayIndex = (jobs[job]["day"]) - 1;
+                    jobsArray[dayIndex]++;
+                }
+            }
+
+            if (selectByCategoryTab["Time Spent"]) {
+                for(let job in jobs){
+                    let dayIndex = (jobs[job]["day"]) - 1;
+                    let [dayDurationHours, dayDurationMinutes, dayDurationSeconds] = jobs[job]["time spent"].split(":");
+                    jobsArray[dayIndex] += parseInt(dayDurationMinutes);
+                }
+            }
+
+            if(selectByCategoryTab["Avg Accuracy"]){
+                let countOfJobsPerDayArray = [...jobsArray];
+                for (let job in jobs) {
+                    let dayIndex = (jobs[job]["day"]) - 1;
+                    let dayAccuracy = jobs[job]["accuracy"];
+                    jobsArray[dayIndex] += dayAccuracy;
+                    countOfJobsPerDayArray[dayIndex]++;
+                }
+
+                for(let i = 0; i < jobsArray.length; i++){
+                    if(countOfJobsPerDayArray[i] > 1){
+                        jobsArray[i] /= countOfJobsPerDayArray[i];
+                    }
+                }
+            }
+
+            if(selectByCategoryTab["Money Earned"]){
+                for (let job in jobs) {
+                    let dayIndex = (jobs[job]["day"]) - 1;
+                    let dayPay = parseFloat(jobs[job]["pay"])
+                    jobsArray[dayIndex] += dayPay;
+                }
+            }
         }
         return jobsArray;
     }
 
     const generateChartInfo = (filteredData) => {
-        let labels = selectByDateTab["day"] ? hourLabels : hourLabels;
+        // generate labels based on the days in selected month, just for month date range
+        let daysInMonthLabel = [];
+        for (let i = 0; i < filteredData.length; i++) {
+            daysInMonthLabel.push(`${i + 1} ${months[currentDateAsObject.getMonth()].slice(0, 3)}`);
+        }
+
+
+        let labels = selectByDateTab["day"] ? hourLabels :
+            selectByDateTab["month"] ? daysInMonthLabel : daysInMonthLabel;
         let key = selectByCategoryTab["Jobs Received"] ? "Jobs Received" :
             selectByCategoryTab["Time Spent"] ? "Time Spent" :
                 selectByCategoryTab["Avg Accuracy"] ? "Avg Accuracy" :
@@ -220,7 +285,6 @@ const BarChart = (props) => {
     const getChartData = () => {
         let filteredByDate = filteredJobsByDate();
         let filteredByCategory = filteredJobsByCategory(filteredByDate);
-
         return generateChartInfo(filteredByCategory);
     }
 
