@@ -40,8 +40,10 @@ function App() {
         let itemDateAsObject = dateObjectFromString(item["Date Submitted"]);
         let itemHour = itemDateAsObject.getHours();
         let adjustedHour = itemHour + 2;
-        // set the new adjusted hour
+        // set gmt adjusted hour
         itemDateAsObject.setHours(adjustedHour);
+        let itemMinutesSpent = (item["Time Spent"].split(":"))[1];
+        itemDateAsObject.setMinutes(itemDateAsObject.getMinutes() - parseInt(itemMinutesSpent));
         let itemYear = itemDateAsObject.getFullYear();
         let itemMonthAsIndex = itemDateAsObject.getMonth();
         let itemMonth = months[itemMonthAsIndex];
