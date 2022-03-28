@@ -38,6 +38,10 @@ function App() {
     jobsData.forEach(item => {
       if (item["Type"] === "Job") {
         let itemDateAsObject = dateObjectFromString(item["Date Submitted"]);
+        let itemHour = itemDateAsObject.getHours();
+        let adjustedHour = itemHour + 2;
+        // set the new adjusted hour
+        itemDateAsObject.setHours(adjustedHour);
         let itemYear = itemDateAsObject.getFullYear();
         let itemMonthAsIndex = itemDateAsObject.getMonth();
         let itemMonth = months[itemMonthAsIndex];
