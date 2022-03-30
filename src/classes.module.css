@@ -1,13 +1,7 @@
 .mainContainer{
-    width: 80%;
-    min-width: 480px;
-    margin: auto;
+   display: flex;
 }
 
-.tabsMainContainer{
-    display: flex;
-    justify-content: space-around;
-}
 
 
 

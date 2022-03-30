@@ -1,13 +1,12 @@
 import classes from "./classes.module.css";
 import { useState } from "react";
-import TabButton from "./components/tabs/TabButton";
 import Calendar from "./components/calendar/Calendar";
-import CalendarHamburger from "./components/calendar/CalendarHamburger";
 import CSVReader from "react-csv-reader";
 import BarChart from "./components/charts/BarChart";
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, set, child, get } from "firebase/database";
 import { dateObjectFromString } from "./generalDateFunctions";
+import { AnimatePresence, motion } from "framer-motion";
 
 const firebaseConfig = {
   apiKey: "AIzaSyDZtwc1-uknDuGCvIenRXPOOdNyGCeoN_M",
@@ -31,6 +30,11 @@ const writeJob = (year, month, id, data) => {
 function App() {
 
   const [jobsData, setJobsData] = useState(false);
+  const [showCalendar, setShowCalendar] = useState(false);
+
+  const calendarHandler = () => {
+    setShowCalendar(state => !state);
+  }
 
   const uploadData = () => {
     const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
@@ -55,7 +59,7 @@ function App() {
         let itemID = item["ID"];
         let itemPay = item["Total"].slice(1);
         let itemAccuracy = item["Changed by QA, %"].slice(0, -1)
-        
+
         let dataToUpload = {
           day: itemDay,
           month: itemMonthAsIndex,
@@ -66,7 +70,7 @@ function App() {
           rejected: false,
           accuracy: 100 - parseInt(itemAccuracy)
         }
-        
+
         writeJob(itemYear, itemMonth, itemID, dataToUpload);
       }
 
@@ -74,20 +78,25 @@ function App() {
   }
 
   return (
-    <div className={classes.mainContainer}>
-      <CalendarHamburger />
+    <>
+      <div className={classes.mainContainer}>
+        <BarChart showCalendarHandler={calendarHandler} />
+          <AnimatePresence>
+            <Calendar key={showCalendar} showCalendar={showCalendar} />
+          </AnimatePresence>
+      </div>
 
-      <CSVReader
-        parserOptions={{
-          header: true,
-          skipEmptyLines: "greedy"
-        }}
-        onFileLoaded={(data) => setJobsData(data)} />
-      <BarChart />
 
-      <button onClick={uploadData}>upload data</button>
-
-    </div>
+      <div>
+        <CSVReader
+          parserOptions={{
+            header: true,
+            skipEmptyLines: "greedy"
+          }}
+          onFileLoaded={(data) => setJobsData(data)} />
+        <button onClick={uploadData}>upload data</button>
+      </div>
+    </>
   );
 }
 

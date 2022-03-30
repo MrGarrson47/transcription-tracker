@@ -378,7 +378,10 @@ const BarChart = (props) => {
         <>
             <div className={classes.mainContainer}>
                 <div className={classes.dateTabsContainer}>
-                    <div></div>
+                    <div onClick={props.showCalendarHandler} className={classes.dateHamburgerContainer}>
+                       <p>{`${currentDateAsObject.getDate()} of ${months[currentDateAsObject.getMonth()]}`}</p>
+                       <p>{currentDateAsObject.getFullYear()}</p>
+                        </div>
                     <TabsContainer
                         tabIds={["day", "month", "year"]}
                         clickHandler={dateTabHandler}
