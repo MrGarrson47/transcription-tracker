@@ -79,6 +79,7 @@ function App() {
 
   return (
     <>
+      {showCalendar && <div onClick={calendarHandler} className={classes.overlayContainer}></div>}
       <div className={classes.mainContainer}>
         <BarChart showCalendarHandler={calendarHandler} />
           <AnimatePresence>

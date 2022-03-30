@@ -10,17 +10,18 @@ const Calendar = (props) => {
 
   return (
     <>
-    {props.showCalendar && <motion.div
-      className={classes.calendarMainContainer}
-      initial={{ y: -50, position: "absolute", opacity: 0 }}
-      animate={{y:50, opacity: 1 }}
-      exit={{ y: -50, opacity: 0 }}
-    >
-      <CalendarYear />
-      <CalendarMonth />
-      <WeekHeader />
-      <CalendarDays />
-    </motion.div>}
+      {props.showCalendar && <motion.div
+        className={classes.calendarMainContainer}
+        initial={{ y: -50, position: "absolute", opacity: 0 }}
+        animate={{ y: 50, opacity: 1 }}
+        exit={{ y: -50, opacity: 0 }}
+      >
+       
+          <CalendarYear />
+          <CalendarMonth />
+          <WeekHeader />
+          <CalendarDays />
+      </motion.div>}
     </>
   )
 }
