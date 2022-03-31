@@ -7,6 +7,7 @@ import { useState, useEffect } from 'react';
 import { initializeApp } from "firebase/app";
 import { getDatabase, ref, set, child, get } from "firebase/database";
 import TabsContainer from './TabsContainer';
+import ExtraInfo from '../extraInfo/ExtraInfo';
 
 const firebaseConfig = {
     apiKey: "AIzaSyDZtwc1-uknDuGCvIenRXPOOdNyGCeoN_M",
@@ -152,6 +153,14 @@ const BarChart = (props) => {
         for (let job in jobs) {
             let [jobHour, jobMinute] = jobs[job]["time received"].split(":");
             let [durationHour, durationMinute, durationSecond] = jobs[job]["time spent"].split(":");
+            jobsArray[jobHour] += parseInt(durationMinute);
+        }
+    }
+
+    const dayDuration = (jobsArray, jobs) => {
+        for (let job in jobs) {
+            let [jobHour, jobMinute] = jobs[job]["time received"].split(":");
+            let [durationHour, durationMinute, durationSecond] = jobs[job]["duration"].split(":");
             jobsArray[jobHour] += parseInt(durationMinute);
         }
     }
@@ -372,16 +381,50 @@ const BarChart = (props) => {
         return generateChartInfo(filteredByCategory);
     }
 
+    const getExtraInfo = () => {
+        if (jobData != null) {
 
+            let monthJobs = getAllJobsForSelectedMonth();
+            let monthJobsCount = 0;
+            for (let job in monthJobs) {
+                monthJobsCount++;
+            }
+
+            let dayJobs = getAllJobsForSelectedDay();
+            let dayTimeSpentArray = [];
+            let dayDurationArray = [];
+            let dayMoneyEarnedArray = [];
+            fillArrayForDaysRange(dayTimeSpentArray);
+            fillArrayForDaysRange(dayDurationArray);
+            fillArrayForDaysRange(dayMoneyEarnedArray);
+            dayTimeSpent(dayTimeSpentArray, dayJobs);
+            dayDuration(dayDurationArray, dayJobs);
+            dayMoneyEarned(dayMoneyEarnedArray, dayJobs);
+            let dayTotalTimeSpent = dayTimeSpentArray.reduce((prev, cur) => prev + cur);
+            let dayTotalDuration = dayDurationArray.reduce((prev, cur) => prev + cur);
+            let dayTotalMoneyEarned = dayMoneyEarnedArray.reduce((prev, cur) => prev + cur);
+
+            return {
+                dayJobsCount: dayJobs ? dayJobs.length : 0,
+                dayTimeSpent: dayTotalTimeSpent,
+                dayDuration: dayTotalDuration,
+                dayMoneyEarned: dayTotalMoneyEarned,
+                monthJobsCount: monthJobsCount
+            }
+        }
+
+    }
+
+    console.log(getExtraInfo())
 
     return (
-        <>
-            <div className={classes.mainContainer}>
+        <div className={classes.mainContainer}>
+            <div className={classes.chartMainContainer} >
                 <div className={classes.dateTabsContainer}>
                     <div onClick={props.showCalendarHandler} className={classes.dateHamburgerContainer}>
-                       <p>{`${currentDateAsObject.getDate()} of ${months[currentDateAsObject.getMonth()]}`}</p>
-                       <p>{currentDateAsObject.getFullYear()}</p>
-                        </div>
+                        <p>{`${currentDateAsObject.getDate()} of ${months[currentDateAsObject.getMonth()]}`}</p>
+                        <p>{currentDateAsObject.getFullYear()}</p>
+                    </div>
                     <TabsContainer
                         tabIds={["day", "month", "year"]}
                         clickHandler={dateTabHandler}
@@ -413,11 +456,9 @@ const BarChart = (props) => {
                         />
                     </div>
                 </div>
-
-
             </div>
-
-        </>
+            <ExtraInfo />
+        </div>
     )
 }
 

@@ -1,8 +1,16 @@
 .mainContainer{
-    width: 70%;
+    width: 100%;
+    display: flex;
 }
+
+.chartMainContainer{
+    width: 70%;
+    min-width: 200px;
+}
+
 .categoriesAndChartContainers{
     display: flex;
+    min-width: 300px;
 }
 
 .dateTabsContainer{
@@ -18,6 +26,7 @@
 
 .chartContainer{
     width: 100%;
+    min-width: auto;
 }
 
 .dateHamburgerContainer{
