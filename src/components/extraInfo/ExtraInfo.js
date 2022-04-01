@@ -1,8 +1,9 @@
 import TabsContainer from '../charts/TabsContainer';
 import classes from './ExtraInfo.module.css';
 import { useState } from 'react';
+import { getExtraInfo } from '../charts/barChartFunctions';
 
-const ExtraInfo = () => {
+const ExtraInfo = (props) => {
 
     const [selectByDateTab, setSelectByDateTab] = useState({
         day: true,
@@ -19,6 +20,8 @@ const ExtraInfo = () => {
         currentTabsSelected[id] = true;
         setSelectByDateTab(currentTabsSelected);
     }
+
+    console.log(getExtraInfo(props.jobData, props.currentDateAsObject))
 
     return (
         <>
