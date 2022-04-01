@@ -6,6 +6,12 @@
     user-select: none;
 }
 
+.tabsContainer{
+   display: grid;
+   grid-template-columns: repeat(3, 1fr);
+    
+}
+
 .headingContainer{
     background-color: #1DFB3E;
     color: white;
@@ -24,7 +30,6 @@
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
-    height: 90%;
     padding-left: 10px;
 }
 

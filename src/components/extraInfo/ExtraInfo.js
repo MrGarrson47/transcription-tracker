@@ -1,6 +1,24 @@
+import TabsContainer from '../charts/TabsContainer';
 import classes from './ExtraInfo.module.css';
+import { useState } from 'react';
 
 const ExtraInfo = () => {
+
+    const [selectByDateTab, setSelectByDateTab] = useState({
+        day: true,
+        month: false,
+        year: false
+    });
+
+    const dateTabHandler = (e) => {
+        const { id } = e.target;
+        let currentTabsSelected = { ...selectByDateTab };
+        for (let key in currentTabsSelected) {
+            currentTabsSelected[key] = false;
+        }
+        currentTabsSelected[id] = true;
+        setSelectByDateTab(currentTabsSelected);
+    }
 
     return (
         <>
@@ -8,6 +26,14 @@ const ExtraInfo = () => {
                 <div className={classes.headingContainer}>
                     <p>Overview</p>
                 </div>
+                <div className={classes.tabsContainer}>
+                    <TabsContainer
+                        tabIds={["day", "month", "year"]}
+                        clickHandler={dateTabHandler}
+                        isActive={selectByDateTab}
+                    />
+                </div>
+
                 <div className={classes.infoMainContainer}>
                     <div className={classes.infoContainer}>
                         <p className={classes.infoLabel}>total jobs received</p>
