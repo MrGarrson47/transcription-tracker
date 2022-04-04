@@ -1,7 +1,7 @@
 import TabsContainer from '../charts/TabsContainer';
 import classes from './ExtraInfo.module.css';
 import { useState } from 'react';
-import { getExtraInfo } from '../charts/barChartFunctions';
+import { prepareAllExtraInfo } from '../charts/jobFilteringFunctions';
 
 const ExtraInfo = (props) => {
 
@@ -21,7 +21,36 @@ const ExtraInfo = (props) => {
         setSelectByDateTab(currentTabsSelected);
     }
 
-    console.log(getExtraInfo(props.jobData, props.currentDateAsObject))
+    const getExtraInfoForDay = ()=>{
+        let {dayJobsCount, dayTimeSpent, dayDuration, dayMoneyEarned} = prepareAllExtraInfo(props.jobData, props.currentDateAsObject);
+        return {
+            jobsCount :dayJobsCount,
+            timeSpent: `${Math.floor((dayTimeSpent /60))}hr ${dayTimeSpent % 60}min`,
+            duration: `${Math.floor((dayDuration /60))}hr ${dayDuration % 60}min`,
+            moneyEarned: `$${dayMoneyEarned.toFixed(2)}`,
+            payRate: dayJobsCount > 0 ? `$${((dayMoneyEarned / dayTimeSpent) * 60).toFixed(2)}` : "$0.00"
+        }
+    }
+
+    const getExtraInfoForMonth = ()=>{
+        let {monthJobsCount, monthTimeSpent, monthDuration, monthMoneyEarned} = prepareAllExtraInfo(props.jobData, props.currentDateAsObject);
+        return {
+            jobsCount :monthJobsCount,
+            timeSpent: `${Math.floor((monthTimeSpent /60))}hr ${monthTimeSpent % 60}min`,
+            duration: `${Math.floor((monthDuration /60))}hr ${monthDuration % 60}min`,
+            moneyEarned: `$${monthMoneyEarned.toFixed(2)}`,
+            payRate: monthJobsCount > 0 ? `$${((monthMoneyEarned / monthTimeSpent) * 60).toFixed(2)}` : "$0.00"
+        }
+    }
+
+    const useExtraInfo = ()=>{
+        if(selectByDateTab["day"]){
+            return getExtraInfoForDay();
+        }
+        if(selectByDateTab["month"]){
+            return getExtraInfoForMonth();
+        }
+    }
 
     return (
         <>
@@ -41,31 +70,31 @@ const ExtraInfo = (props) => {
                     <div className={classes.infoContainer}>
                         <p className={classes.infoLabel}>total jobs received</p>
                         <div className={classes.infoValueContainer}>
-                            <p className={classes.infoValue}>5</p>
+                            <p className={classes.infoValue}>{useExtraInfo().jobsCount}</p>
                         </div>
                     </div>
                     <div className={classes.infoContainer}>
                         <p className={classes.infoLabel}>total time spent</p>
                         <div className={classes.infoValueContainer}>
-                            <p className={classes.infoValue}>1hr 22m</p>
+                            <p className={classes.infoValue}>{useExtraInfo().timeSpent}</p>
                         </div>
                     </div>
                     <div className={classes.infoContainer}>
                         <p className={classes.infoLabel}>total duration of jobs</p>
                         <div className={classes.infoValueContainer}>
-                            <p className={classes.infoValue}>2hr 52m</p>
+                            <p className={classes.infoValue}>{useExtraInfo().duration}</p>
                         </div>
                     </div>
                     <div className={classes.infoContainer}>
                         <p className={classes.infoLabel}>total money earned</p>
                         <div className={classes.infoValueContainer}>
-                            <p className={classes.infoValue}>$12.54</p>
+                            <p className={classes.infoValue}>{useExtraInfo().moneyEarned}</p>
                         </div>
                     </div>
                     <div className={classes.infoContainer}>
-                        <p className={classes.infoLabel}>pay per hour</p>
+                        <p className={classes.infoLabel}>pay per working hour</p>
                         <div className={classes.infoValueContainer}>
-                            <p className={classes.infoValue}>$2.34</p>
+                            <p className={classes.infoValue}>{useExtraInfo().payRate}</p>
                         </div>
                     </div>
                 </div>

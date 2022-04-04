@@ -8,7 +8,7 @@ import { initializeApp } from "firebase/app";
 import { getDatabase, ref, set, child, get } from "firebase/database";
 import TabsContainer from './TabsContainer';
 import ExtraInfo from '../extraInfo/ExtraInfo';
-import { getChartData } from './barChartFunctions';
+import { getChartData } from './jobFilteringFunctions';
 
 const firebaseConfig = {
     apiKey: "AIzaSyDZtwc1-uknDuGCvIenRXPOOdNyGCeoN_M",

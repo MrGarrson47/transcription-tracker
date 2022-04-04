@@ -217,6 +217,15 @@ const monthTimeSpent = (jobsArray, jobs) => {
         jobsArray[dayIndex] += parseInt(dayDurationMinutes);
     }
 }
+
+const monthDuration = (jobsArray, jobs) => {
+    for (let job in jobs) {
+        let dayIndex = (jobs[job]["day"]) - 1;
+        let [dayDurationHours, dayDurationMinutes, dayDurationSeconds] = jobs[job]["duration"].split(":");
+        jobsArray[dayIndex] += parseInt(dayDurationMinutes);
+    }
+}
+
 const monthAvgAccuracy = (jobsArray, jobs) => {
     let countOfJobsPerDayArray = [...jobsArray];
     for (let job in jobs) {
@@ -294,14 +303,8 @@ const yearMoneyEarned = (jobsArray, jobs) => {
     }
 }
 
-export const getExtraInfo = (jobData, currentDateAsObject) => {
+export const prepareAllExtraInfo = (jobData, currentDateAsObject) => {
     if (jobData != null) {
-
-        let monthJobs = getAllJobsForSelectedMonth(jobData, currentDateAsObject);
-        let monthJobsCount = 0;
-        for (let job in monthJobs) {
-            monthJobsCount++;
-        }
 
         let dayJobs = getAllJobsForSelectedDay(jobData, currentDateAsObject);
         let dayTimeSpentArray = [];
@@ -317,12 +320,33 @@ export const getExtraInfo = (jobData, currentDateAsObject) => {
         let dayTotalDuration = dayDurationArray.reduce((prev, cur) => prev + cur);
         let dayTotalMoneyEarned = dayMoneyEarnedArray.reduce((prev, cur) => prev + cur);
 
+        let monthJobs = getAllJobsForSelectedMonth(jobData, currentDateAsObject);
+        let monthTimeSpentArray = [];
+        let monthDurationArray = [];
+        let monthMoneyEarnedArray = [];
+        fillArrayForMonthRange(monthTimeSpentArray, currentDateAsObject);
+        fillArrayForMonthRange(monthDurationArray, currentDateAsObject);
+        fillArrayForMonthRange(monthMoneyEarnedArray, currentDateAsObject);
+        let monthJobsCount = 0;
+        for (let job in monthJobs) {
+            monthJobsCount++;
+        }
+        monthTimeSpent(monthTimeSpentArray, monthJobs );
+        monthDuration(monthDurationArray, monthJobs);
+        monthMoneyEarned(monthMoneyEarnedArray, monthJobs);
+        let monthTotalTimeSpent = monthTimeSpentArray.reduce((prev, cur) => prev + cur);
+        let monthTotalDuration = monthDurationArray.reduce((prev, cur) => prev + cur);
+        let monthTotalMoneyEarned = monthMoneyEarnedArray.reduce((prev, cur) => prev + cur);
+
         return {
             dayJobsCount: dayJobs ? dayJobs.length : 0,
             dayTimeSpent: dayTotalTimeSpent,
             dayDuration: dayTotalDuration,
             dayMoneyEarned: dayTotalMoneyEarned,
-            monthJobsCount: monthJobsCount
+            monthJobsCount: monthJobsCount,
+            monthTimeSpent: monthTotalTimeSpent,
+            monthDuration: monthTotalDuration,
+            monthMoneyEarned: monthTotalMoneyEarned
         }
     }
 
