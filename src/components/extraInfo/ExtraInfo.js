@@ -43,12 +43,26 @@ const ExtraInfo = (props) => {
         }
     }
 
+    const getExtraInfoForYear = ()=>{
+        let {yearJobsCount, yearTimeSpent, yearDuration, yearMoneyEarned} = prepareAllExtraInfo(props.jobData, props.currentDateAsObject);
+        return {
+            jobsCount :yearJobsCount,
+            timeSpent: `${Math.floor((yearTimeSpent /60))}hr ${yearTimeSpent % 60}min`,
+            duration: `${Math.floor((yearDuration /60))}hr ${yearDuration % 60}min`,
+            moneyEarned: `$${yearMoneyEarned.toFixed(2)}`,
+            payRate: yearJobsCount > 0 ? `$${((yearMoneyEarned / yearTimeSpent) * 60).toFixed(2)}` : "$0.00"
+        }
+    }
+
     const useExtraInfo = ()=>{
         if(selectByDateTab["day"]){
             return getExtraInfoForDay();
         }
         if(selectByDateTab["month"]){
             return getExtraInfoForMonth();
+        }
+        if(selectByDateTab["year"]){
+            return getExtraInfoForYear();
         }
     }
 

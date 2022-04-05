@@ -270,6 +270,19 @@ const yearTimeSpent = (jobsArray, jobs) => {
     }
 }
 
+const yearDuration = (jobsArray, jobs) => {
+    for (let month in jobs) {
+        let indexOfMonth = months.findIndex(index => index === month);
+        let timeSpent = 0;
+        for (let job in jobs[month]) {
+            let jobTimeSpent = jobs[month][job]["duration"];
+            let minutes = (jobTimeSpent.split(":"))[1];
+            timeSpent += parseInt(minutes);
+        }
+        jobsArray[indexOfMonth] = timeSpent;
+    }
+}
+
 const yearAvgAccuracy = (jobsArray, jobs) => {
     for (let month in jobs) {
         let indexOfMonth = months.findIndex(index => index === month);
@@ -338,6 +351,25 @@ export const prepareAllExtraInfo = (jobData, currentDateAsObject) => {
         let monthTotalDuration = monthDurationArray.reduce((prev, cur) => prev + cur);
         let monthTotalMoneyEarned = monthMoneyEarnedArray.reduce((prev, cur) => prev + cur);
 
+        let yearJobsCount = 0;
+        let yearTimeSpentArray = [];
+        let yearDurationArray = [];
+        let yearMoneyEarnedArray = [];
+        for(let month in jobData){
+            for(let job in jobData[month]){
+                yearJobsCount++;
+            }
+        }
+        fillArrayForYearRange(yearTimeSpentArray);
+        fillArrayForYearRange(yearDurationArray);
+        fillArrayForYearRange(yearMoneyEarnedArray);
+        yearTimeSpent(yearTimeSpentArray, jobData);
+        yearDuration(yearDurationArray, jobData);
+        yearMoneyEarned(yearMoneyEarnedArray, jobData);
+        let yearTotalTimeSpent = yearTimeSpentArray.reduce((prev, cur) => prev + cur);
+        let yearTotalDuration = yearDurationArray.reduce((prev, cur) => prev + cur);
+        let yearTotalMoneyEarned = yearMoneyEarnedArray.reduce((prev, cur) => prev + cur);
+
         return {
             dayJobsCount: dayJobs ? dayJobs.length : 0,
             dayTimeSpent: dayTotalTimeSpent,
@@ -346,7 +378,11 @@ export const prepareAllExtraInfo = (jobData, currentDateAsObject) => {
             monthJobsCount: monthJobsCount,
             monthTimeSpent: monthTotalTimeSpent,
             monthDuration: monthTotalDuration,
-            monthMoneyEarned: monthTotalMoneyEarned
+            monthMoneyEarned: monthTotalMoneyEarned,
+            yearJobsCount: jobData ? yearJobsCount : 0,
+            yearTimeSpent: yearTotalTimeSpent,
+            yearDuration: yearTotalDuration,
+            yearMoneyEarned: yearTotalMoneyEarned
         }
     }
 
