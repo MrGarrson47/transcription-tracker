@@ -68,7 +68,7 @@ function App() {
           duration: itemDuration,
           pay: itemPay,
           rejected: false,
-          accuracy: 100 - parseInt(itemAccuracy)
+          accuracy: itemAccuracy.length === 0 ? 0: 100 - parseInt(itemAccuracy)
         }
 
         writeJob(itemYear, itemMonth, itemID, dataToUpload);
